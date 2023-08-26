@@ -4,7 +4,7 @@ skip_covered = true
 skip_empty = true
 
 [run]
-# Ensure all python modules in hab have their coverage reported,
+# Ensure all python modules in hab_gui have their coverage reported,
 # not just files that pytest touches.
 source = hab_gui
 omit =

@@ -26,7 +26,7 @@ classifiers = [
 ]
 requires-python = ">=3.6"
 dependencies = [
-    "hab>=0.20.0",
+    "hab>=0.21.0",
     "Qt.py",
     ]
 
@@ -64,8 +64,8 @@ json5 = [
     "pyjson5"
 ]
 
-[project.scripts]
-hg1 = "hab_gui.windows.alias_launch_window:main"
+[project.gui-scripts]
+habw = "hab.cli:cli"
 
 [tool.setuptools]
 include-package-data = true

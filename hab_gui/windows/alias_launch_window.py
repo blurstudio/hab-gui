@@ -14,6 +14,8 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
 
     Args:
         resolver (hab.Resolver): The resolver to change verbosity settings on.
+        uri (str, optional): If passed, use this as the current uri. Otherwise
+            the value stored in the users prefs is used.
         verbosity (int): Change the verbosity setting to this value. If None is passed,
             all results are be shown without any filtering.
         button_wrap_length (int) Indicates the number of buttons per column/row.
@@ -23,7 +25,13 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
     """
 
     def __init__(
-        self, resolver, verbosity=0, button_wrap_length=3, button_layout=0, parent=None
+        self,
+        resolver,
+        uri=None,
+        verbosity=0,
+        button_wrap_length=3,
+        button_layout=0,
+        parent=None,
     ):
         super(AliasLaunchWindow, self).__init__(parent)
         self.resolver = resolver
@@ -31,14 +39,14 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         self.button_wrap_length = button_wrap_length
         self.button_layout = button_layout
 
-        self.init_gui()
+        self.init_gui(uri)
 
         # Window properties
         self.setWindowTitle("Hab Launch Aliases")
         self.setFixedWidth(400)
         self.center_window_position()
 
-    def init_gui(self):
+    def init_gui(self, uri=None):
         self.window = QtWidgets.QWidget()
         self.hlayout = QtWidgets.QVBoxLayout()
         self.uri_widget = URIComboBox(
@@ -59,10 +67,11 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         self.window.setLayout(self.hlayout)
 
         # Check for stored URI and apply it as the current text
-        local_stored_uri = str(self.resolver.user_prefs().uri_check())
-        if local_stored_uri:
-            self.uri_widget.set_uri(local_stored_uri)
-            self.uri_changed(local_stored_uri)
+        if uri is None:
+            uri = str(self.resolver.user_prefs().uri_check())
+        if uri:
+            self.uri_widget.set_uri(uri)
+            self.uri_changed(uri)
 
     def uri_changed(self, uri):
         self.alias_button_grid.uri = uri

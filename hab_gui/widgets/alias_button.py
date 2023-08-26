@@ -32,9 +32,8 @@ class AliasButton(QtWidgets.QToolButton):
         self.refresh()
 
     def _button_action(self):
-        print(f"cmd {self.alias_dict[self.alias_name]['cmd']}")
-        # TODO Need to enable the launch command once the Hab code is ready
-        # cmd = cfg.launch(alias_name)
+        """Launch the alias in a subprocess."""
+        self.cfg.launch(self.alias_name)
 
     def refresh(self):
         alias = self.alias_dict[self.alias_name]

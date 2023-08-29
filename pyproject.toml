@@ -51,6 +51,7 @@ dev = [
     "flake8-bugbear==22.12.6",
     "Flake8-pyproject",
     "isort",
+    "json5",
     "pep8-naming==0.13.3",
     "pytest",
     "tox",
@@ -59,7 +60,6 @@ dev = [
 
 [project.scripts]
 hg1 = "hab_gui.gui.ui_alias_launch:main"
-hg2 = "hab_gui.gui.ui_test:main"
 
 [tool.setuptools]
 include-package-data = true

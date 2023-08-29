@@ -2,6 +2,12 @@ from Qt import QtCore, QtWidgets
 
 
 class URIComboBox(QtWidgets.QComboBox):
+    """Create a QComboBox to store a given list of URIs.
+
+    Args:
+        resolver (hab.Resolver): The resolver to pull the URI data from Hab.
+    """
+
     uri_changed = QtCore.Signal(str)
 
     def __init__(self, resolver, parent=None):
@@ -23,29 +29,12 @@ class URIComboBox(QtWidgets.QComboBox):
         items = self.resolver.dump_forest(self.resolver.configs, indent="")
         self.addItems(items)
 
+        # Check for stored URI and set it as the default value
+        local_stored_uri = str(self.resolver.user_prefs().uri_check())
+        self.setCurrentText(local_stored_uri)
+
     def uri(self):
         return self.currentText()
 
     def set_uri(self, uri):
         self.setEditText(uri)
-
-
-class URILineEdit(QtWidgets.QLineEdit):
-    uri_changed = QtCore.Signal(str)
-
-    def __init__(self, resolver, parent=None):
-        super().__init__(parent)
-        self.resolver = resolver
-        self.setPlaceholderText("Enter a URI...")
-
-        self.textChanged.connect(self._emit_uri_changed)
-
-    def _emit_uri_changed(self):
-        print("Hello LineEdit")
-        self.uri_changed.emit(self.uri())
-
-    def uri(self):
-        return self.text()
-
-    def set_uri(self, uri):
-        self.setText(uri)

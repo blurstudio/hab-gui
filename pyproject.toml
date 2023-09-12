@@ -28,8 +28,10 @@ requires-python = ">=3.6"
 dependencies = [
     "hab>=0.20.0",
     "Qt.py",
-    "PyQt5",
     ]
+
+# TODO We need to address how to handle PyQT and PySide installs for development
+
 dynamic = ["version"]
 
 [project.readme]
@@ -58,8 +60,12 @@ dev = [
     "build",
 ]
 
+json5 = [
+    "pyjson5"
+]
+
 [project.scripts]
-hg1 = "hab_gui.gui.ui_alias_launch:main"
+hg1 = "hab_gui.windows.alias_launch_window:main"
 
 [tool.setuptools]
 include-package-data = true

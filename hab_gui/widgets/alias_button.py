@@ -1,5 +1,5 @@
 import logging
-import subprocess  # noqa: F401
+import os
 
 from Qt import QtCore, QtGui, QtWidgets
 
@@ -10,8 +10,10 @@ class AliasButton(QtWidgets.QToolButton):
     """Create a QToolButton which will launch a specified alias via a subprocess.
 
     Args:
-        cfg (hab.Resolver.resolve): The config dict which contains URI related data.
+        cfg (hab.parsers.flat_config.FlatConfig): The config object which contains
+        URI related data.
         alias_name (str): The alias name passed from AliasButtonGrid.
+        parent (Qt.QtWidgets.QWidget, optional): Define a parent for this widget.
     """
 
     button_pressed = QtCore.Signal(str)
@@ -26,32 +28,25 @@ class AliasButton(QtWidgets.QToolButton):
         qsize_policy = QtWidgets.QSizePolicy
         size_policy = qsize_policy(qsize_policy.Minimum, qsize_policy.Preferred)
         self.setSizePolicy(size_policy)
-        self.clicked.connect(self.button_action)
+        self.clicked.connect(self._button_action)
         self.refresh()
 
-    def button_action(self):
+    def _button_action(self):
         print(f"cmd {self.alias_dict[self.alias_name]['cmd']}")
         # TODO Need to enable the launch command once the Hab code is ready
         # cmd = cfg.launch(alias_name)
 
     def refresh(self):
-        self.refresh_icon()
-        self.refresh_text()
-
-    def refresh_icon(self):
-        try:
-            icon_path = self.alias_dict[self.alias_name]["icon"]
-            icon = QtGui.QIcon()
+        alias = self.alias_dict[self.alias_name]
+        icon = QtGui.QIcon()
+        icon_path = alias.get("icon", "")
+        if os.path.exists(icon_path):
             icon.addPixmap(QtGui.QPixmap(icon_path))
-            self.setIcon(icon)
-        except Exception as e:
-            # TODO Needs proper exception handling
-            return e
+        elif icon_path:
+            logger.debug(
+                f"The specified icon file {icon_path} does not exist for {self.alias_dict}"
+            )
+        self.setIcon(icon)
 
-    def refresh_text(self):
-        try:
-            self.setText(self.alias_dict[self.alias_name]["label"])
-        except Exception as e:
-            self.setText(self.alias_name)
-            # TODO Needs proper exception handling
-            return e
+        label = alias.get("label", self.alias_name)
+        self.setText(label)

@@ -168,9 +168,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# Custom
-files/
-
 # Sublime
 *.sublime-project
 *.sublime-workspace
@@ -179,5 +176,5 @@ files/
 *.code-workspace
 .vscode/
 
-# Blur
-version.py
+# Custom
+hab_gui/version.py

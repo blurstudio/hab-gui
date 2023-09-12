@@ -1,17 +1,102 @@
+
 [build-system]
 requires = [
-    "setuptools >= 44.1.1",
-    "setuptools_scm[toml]>=4",
-    "wheel >= 0.36",
+    "setuptools",
+    "setuptools-scm[toml]>=4",
+    "wheel",
 ]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "hab_gui"
+description = "GUI for user interaction to Hab."
+authors = [{name = "Blur Studio", email = "opensource@blur.com"}]
+license = {text = "LGPL-3.0"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+requires-python = ">=3.6"
+dependencies = [
+    "hab>=0.20.0",
+    "Qt.py",
+    "PyQt5",
+    ]
+dynamic = ["version"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.urls]
+Homepage = "https://github.com/blurstudio/hab-gui"
+Source = "https://github.com/blurstudio/hab-gui"
+Tracker = "https://github.com/blurstudio/hab-gui/issues"
+
+[project.optional-dependencies]
+dev = [
+    "black==22.12.0",
+    "build",
+    "covdefaults",
+    "coverage",
+    "flake8==5.0.4",
+    "flake8-bugbear==22.12.6",
+    "Flake8-pyproject",
+    "isort",
+    "pep8-naming==0.13.3",
+    "pytest",
+    "tox",
+    "build",
+]
+
+[project.scripts]
+hg1 = "hab_gui.gui.ui_alias_launch:main"
+hg2 = "hab_gui.gui.ui_test:main"
+
+[tool.setuptools]
+include-package-data = true
+platforms = ["any"]
+license-files = ["LICENSE"]
+
+[tool.setuptools.packages.find]
+exclude = ["tests"]
+namespaces = false
+
 
 [tool.setuptools_scm]
 write_to = "hab_gui/version.py"
 version_scheme = "release-branch-semver"
 
-[tool.black]
-skip-string-normalization = true
+# Fix me!
+[tool.flake8]
+select = ["B", "C", "E", "F", "N", "W", "B9"]
+extend-ignore = [
+    "E203",
+    "E501",
+    "E722",
+    "W503",
+]
+max-line-length = "88"
+exclude = [
+    "*.egg-info",
+    "*.pyc",
+    ".cache",
+    ".eggs",
+    ".git",
+    ".tox",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv"
+]
 
 [tool.isort]
 profile = "black"

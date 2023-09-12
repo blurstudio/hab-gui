@@ -6,6 +6,7 @@ class URILineEdit(QtWidgets.QLineEdit):
 
     Args:
         resolver (hab.Resolver): The resolver to pull the URI data from Hab.
+        parent (Qt.QtWidgets.QWidget, optional): Define a parent for this widget.
     """
 
     uri_changed = QtCore.Signal(str)

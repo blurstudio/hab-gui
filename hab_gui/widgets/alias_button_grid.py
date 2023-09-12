@@ -19,6 +19,7 @@ class AliasButtonGrid(QtWidgets.QWidget):
         uri (string, optional) The project uri that specifies the button aliases.
         button_cls (QToolButton, optional): The button class that populates
             the grid.
+        parent (Qt.QtWidgets.QWidget, optional): Define a parent for this widget.
     """
 
     def __init__(
@@ -44,6 +45,8 @@ class AliasButtonGrid(QtWidgets.QWidget):
 
     def refresh(self):
         self.clear()
+        if self.uri is None:
+            return
         cfg = self.resolver.resolve(self.uri)
         with hab.utils.verbosity_filter(self.resolver, self.verbosity):
             alias_list = list(cfg.aliases.keys())

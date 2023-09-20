@@ -1,0 +1,12 @@
+{
+    "prepend": {
+        "entry_points": {
+            "cli": {
+                "gui": "hab_gui.cli:gui"
+            }
+        }
+    },
+    "set": {
+        "prefs_default": "--prefs"
+    }
+}

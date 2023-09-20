@@ -1,14 +1,30 @@
+import logging
+
 import click
 from hab.cli import UriArgument, UriHelpClass
 
+import hab_gui.utils
 
-def get_application():
-    """Returns the QApplication instance, creating it if required."""
+logger = logging.getLogger(__name__)
+
+
+def get_application(settings=None, **kwargs):
+    """Returns the QApplication instance, creating it if required.
+
+    If settings is passed, then the `hab_gui_init` entry point is processed, any
+    other kwargs are passed to `cli_args` of `hab_gui.utils.entry_point_init`.
+    """
     from Qt.QtWidgets import QApplication
 
     global app
+
+    if settings:
+        hab_gui.utils.entry_point_init(settings.resolver, "launch", cli_args=kwargs)
+
+    # Get the existing app if possible
     app = QApplication.instance()
     if not app:
+        # Otherwise create a new QApplication instance
         app = QApplication([])
 
     return app
@@ -39,10 +55,12 @@ def launch(settings, verbosity, uri):
         # is returned by UriArgument. Convert that to None.
         uri = None
 
-    app = get_application()
+    app = get_application(settings, uri=uri, verbosity=verbosity)
+
     settings.resolver._verbosity_target = "hab-gui"
     window = AliasLaunchWindow(settings.resolver, uri=uri, verbosity=verbosity)
     window.show()
+
     app.exec_()
 
 
@@ -60,7 +78,7 @@ def set_uri(settings, uri):
 
     # Create the QApplication, app.exec_ currently does not need called due
     # to this only using QInputDialog and QMessageBox.
-    app = get_application()  # noqa: F841
+    app = get_application(settings, uri=uri)  # noqa: F841
 
     if uri is not None:
         # If the uri was passed, no need to ask the user

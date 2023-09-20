@@ -1,0 +1,9 @@
+{
+    "prepend": {
+        "entry_points": {
+            "hab_gui_init": {
+                "gui": "hab_gui.entry_points.logging_exception:LoggingExceptionInit"
+            }
+        }
+    }
+}

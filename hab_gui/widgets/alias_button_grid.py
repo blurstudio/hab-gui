@@ -50,6 +50,8 @@ class AliasButtonGrid(QtWidgets.QWidget):
         cfg = self.resolver.resolve(self.uri)
         with hab.utils.verbosity_filter(self.resolver, self.verbosity):
             alias_list = list(cfg.aliases.keys())
+            # So buttons show up in alphabetical order
+            alias_list.sort()
         button_coords = utils.make_button_coords(
             alias_list, self.button_wrap_length, self.button_layout
         )

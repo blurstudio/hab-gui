@@ -92,13 +92,16 @@ def set_uri(settings, uri):
     # TODO: Use fancy hab-gui widgets configured by site
     current_uri = settings.resolver.user_prefs().uri
     uris = list(settings.resolver.dump_forest(settings.resolver.configs, indent=""))
-    if current_uri not in uris:
+    if current_uri and current_uri not in uris:
         uris.append(current_uri)
-    uris.sort()
-    current = uris.index(current_uri)
+    uris.sort(key=lambda i: i.lower())
+
+    current_index = -1
+    if current_uri:
+        current_index = uris.index(current_uri)
 
     uri, ok = QInputDialog.getItem(
-        None, "Set hab URI", "Set default hab URI to:", uris, current=current
+        None, "Set hab URI", "Set default hab URI to:", uris, current=current_index
     )
     if ok:
         settings.resolver.user_prefs().uri = uri

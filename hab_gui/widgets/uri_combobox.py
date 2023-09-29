@@ -40,4 +40,10 @@ class URIComboBox(QtWidgets.QComboBox):
         return self.currentText()
 
     def set_uri(self, uri):
-        self.setEditText(uri)
+        # If the uri is already an item in the combo box, select it
+        index = self.findText(uri)
+        if index > -1:
+            self.setCurrentIndex(index)
+        else:
+            # Otherwise update the text of the combo box to match
+            self.setEditText(uri)

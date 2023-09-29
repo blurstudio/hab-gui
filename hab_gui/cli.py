@@ -94,7 +94,7 @@ def set_uri(settings, uri):
     uris = list(settings.resolver.dump_forest(settings.resolver.configs, indent=""))
     if current_uri and current_uri not in uris:
         uris.append(current_uri)
-    uris.sort(key=lambda i: i.lower())
+    uris.sort(key=str.casefold)
 
     current_index = -1
     if current_uri:

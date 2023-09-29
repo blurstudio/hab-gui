@@ -41,6 +41,7 @@ class AliasButtonGrid(QtWidgets.QWidget):
         self.button_cls = button_cls
 
         self.grid_layout = QtWidgets.QGridLayout(self)
+        self.grid_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.grid_layout)
 
     def refresh(self):

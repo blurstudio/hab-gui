@@ -2,6 +2,7 @@ import hab
 from Qt import QtWidgets
 
 from ..widgets.alias_button_grid import AliasButtonGrid
+from ..widgets.pinned_uris_button import PinnedUriButton
 from ..widgets.uri_combobox import URIComboBox
 
 
@@ -48,10 +49,23 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
 
     def init_gui(self, uri=None):
         self.window = QtWidgets.QWidget()
-        self.hlayout = QtWidgets.QVBoxLayout()
+        self.layout = QtWidgets.QGridLayout()
+
         self.uri_widget = URIComboBox(
             self.resolver, verbosity=self.verbosity, parent=self
         )
+
+        # If prefs are enabled, insert the Pinned URI widget
+        column_uri_widget = 0
+        prefs_enabled = self.resolver.user_prefs().enabled
+        if prefs_enabled:
+            self.pinned_uris = PinnedUriButton(
+                self.resolver, self.uri_widget, verbosity=self.verbosity, parent=self
+            )
+            self.layout.addWidget(self.pinned_uris, 0, 0)
+            column_uri_widget = 1
+            self.pinned_uris.uri_widget = self.uri_widget
+
         self.alias_button_grid = AliasButtonGrid(
             self.resolver,
             self.button_wrap_length,
@@ -61,10 +75,10 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         )
 
         self.setCentralWidget(self.window)
-        self.hlayout.addWidget(self.uri_widget)
+        self.layout.addWidget(self.uri_widget, 0, column_uri_widget)
         self.uri_widget.uri_changed.connect(self.uri_changed)
-        self.hlayout.addWidget(self.alias_button_grid)
-        self.window.setLayout(self.hlayout)
+        self.layout.addWidget(self.alias_button_grid, 1, 0, 1, -1)
+        self.window.setLayout(self.layout)
 
         # Check for stored URI and apply it as the current text
         if uri is None:
@@ -72,6 +86,17 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         if uri:
             self.uri_widget.set_uri(uri)
             self.uri_changed(uri)
+
+        # Ensure the URI widget has focus by default
+        self.uri_widget.setFocus()
+
+        # Ensure the tab order is intuitive. This doesn't come for free because
+        # we need to pass uri_widget as an argument to pinned_uris which requires
+        # creating it first and that breaks the default tab ordering.
+        if prefs_enabled:
+            self.setTabOrder(self.pinned_uris, self.uri_widget)
+            self.setTabOrder(self.uri_widget, self.alias_button_grid)
+            self.setTabOrder(self.alias_button_grid, self.pinned_uris)
 
     def uri_changed(self, uri):
         self.alias_button_grid.uri = uri

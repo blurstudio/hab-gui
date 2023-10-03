@@ -1,7 +1,6 @@
 import logging
-import os
 
-from Qt import QtCore, QtGui, QtWidgets
+from Qt import QtCore, QtWidgets
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +23,6 @@ class AliasButton(QtWidgets.QToolButton):
         self.alias_name = alias_name
 
         self.alias_dict = self.cfg.aliases
-        self.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         qsize_policy = QtWidgets.QSizePolicy
         size_policy = qsize_policy(qsize_policy.Minimum, qsize_policy.Preferred)
         self.setSizePolicy(size_policy)
@@ -37,15 +35,5 @@ class AliasButton(QtWidgets.QToolButton):
 
     def refresh(self):
         alias = self.alias_dict[self.alias_name]
-        icon = QtGui.QIcon()
-        icon_path = alias.get("icon", "")
-        if os.path.exists(icon_path):
-            icon.addPixmap(QtGui.QPixmap(icon_path))
-        elif icon_path:
-            logger.debug(
-                f"The specified icon file {icon_path} does not exist for {self.alias_dict}"
-            )
-        self.setIcon(icon)
-
         label = alias.get("label", self.alias_name)
         self.setText(label)

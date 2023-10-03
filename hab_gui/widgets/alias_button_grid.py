@@ -2,7 +2,7 @@ import hab
 from Qt import QtWidgets
 
 from .. import utils
-from .alias_button import AliasButton
+from .alias_icon_button import AliasIconButton
 
 
 class AliasButtonGrid(QtWidgets.QWidget):
@@ -29,7 +29,7 @@ class AliasButtonGrid(QtWidgets.QWidget):
         button_layout,
         verbosity,
         uri=None,
-        button_cls=AliasButton,
+        button_cls=AliasIconButton,
         parent=None,
     ):
         super().__init__(parent)

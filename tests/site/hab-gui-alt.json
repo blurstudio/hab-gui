@@ -1,0 +1,21 @@
+{
+    "prepend": {
+        "entry_points": {
+            "cli": {
+                "gui": "hab_gui.cli:gui"
+            },
+            "hab_gui_uri_widget": {
+                "uri_widget": "hab_gui.widgets.uri_line_edit:URILineEdit"
+            },
+            "hab_gui_alias_widget": {
+                "uri_widget": "hab_gui.widgets.alias_button:AliasButton"
+            },
+            "hab_gui_uri_pin_widget": {
+                "uri_widget": null
+            }
+        }
+    },
+    "set": {
+        "prefs_default": "--prefs"
+    }
+}

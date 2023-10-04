@@ -44,6 +44,11 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         self.setFixedWidth(400)
         self.center_window_position()
 
+    def closeEvent(self, event):  # noqa: N802
+        """Saves the currently selected URI on close if prefs are enabled."""
+        self.resolver.user_prefs().uri = self.uri_widget.uri()
+        super().closeEvent(event)
+
     def load_entry_point(self, name, default, allow_none=False):
         """Work function that loads the requested entry_point."""
 

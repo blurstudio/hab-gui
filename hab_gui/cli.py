@@ -1,33 +1,45 @@
 import logging
+import os
 
 import click
 from hab.cli import UriArgument, UriHelpClass
 
-import hab_gui.utils
+import hab_gui.utils as utils
+
+from .widgets.splash_screen import SplashScreen
 
 logger = logging.getLogger(__name__)
 
 
-def get_application(settings=None, **kwargs):
+def get_application(settings=None, splash=True, **kwargs):
     """Returns the QApplication instance, creating it if required.
 
     If settings is passed, then the `hab_gui_init` entry point is processed, any
     other kwargs are passed to `cli_args` of `hab_gui.utils.entry_point_init`.
     """
+    # TODO update doc string
     from Qt.QtWidgets import QApplication
 
     global app
 
     if settings:
-        hab_gui.utils.entry_point_init(settings.resolver, "launch", cli_args=kwargs)
+        utils.entry_point_init(settings.resolver, "launch", cli_args=kwargs)
 
     # Get the existing app if possible
     app = QApplication.instance()
+    _splash = None
     if not app:
         # Otherwise create a new QApplication instance
         app = QApplication([])
+        if splash:
+            try:
+                splash_image = utils.get_splash_image(settings.resolver)
+                _splash = SplashScreen(splash_image)
+                _splash.show()
+            except Exception:
+                print("No splash screen configured")
 
-    return app
+    return app, _splash
 
 
 @click.group()
@@ -55,11 +67,14 @@ def launch(settings, verbosity, uri):
         # is returned by UriArgument. Convert that to None.
         uri = None
 
-    app = get_application(settings, uri=uri, verbosity=verbosity)
+    app, splash = get_application(settings, uri=uri, verbosity=verbosity)
 
     settings.resolver._verbosity_target = "hab-gui"
+
     window = AliasLaunchWindow(settings.resolver, uri=uri, verbosity=verbosity)
     window.show()
+    if splash:
+        splash.finish(window)
 
     app.exec_()
 
@@ -78,7 +93,7 @@ def set_uri(settings, uri):
 
     # Create the QApplication, app.exec_ currently does not need called due
     # to this only using QInputDialog and QMessageBox.
-    app = get_application(settings, uri=uri)  # noqa: F841
+    _ = get_application(settings, uri=uri, splash=False)
 
     if uri is not None:
         # If the uri was passed, no need to ask the user

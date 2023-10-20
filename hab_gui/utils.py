@@ -1,3 +1,6 @@
+import os
+
+
 def entry_point_init(resolver, cmd, cli_args=None, **kwargs):
     """Used to apply startup configuration via site config.
 
@@ -59,3 +62,28 @@ def make_button_coords(button_list, wrap_length, arrangement):
                 col += 1
                 row = 0
     return array
+
+
+def get_splash_image(resolver):
+    """
+    Randomly grabs an image to use as a splash screen while starting Hab-Gui.
+
+    Valid image formats: JPG, PNG, GIF
+
+    A resolver object will be used to grab a site.json config that defines paths
+    to any image or image directory.  Those will be distilled down to a list of
+    valid images that can be used by the Hab-Gui SplashScreen class.  This method
+    will then randomly choose an image from that list.
+    """
+    resolved_list = []
+    valid_extentions = [".jpg", ".png", ".gif"]
+    for item in resolver.site.get("splash_screen", {}):
+        if os.path.isdir(item):
+            for scan_obj in os.scandir(item):
+                if scan_obj.is_file:
+                    if any(x in scan_obj.name for x in valid_extentions):
+                        print(scan_obj.name)
+                        resolved_list.append(scan_obj.path)
+    import random
+
+    return random.choice(resolved_list)

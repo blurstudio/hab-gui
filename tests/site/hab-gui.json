@@ -4,7 +4,11 @@
             "cli": {
                 "gui": "hab_gui.cli:gui"
             }
-        }
+        },
+        "splash_screen": [
+            "C:\\blur\\code\\_resources\\images"
+        ]
+            
     },
     "set": {
         "prefs_default": "--prefs"

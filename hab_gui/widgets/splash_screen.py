@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtGui, QtTest, QtWidgets
+from PyQt5 import QtGui, QtWidgets
 
 
 class SplashScreen(QtWidgets.QSplashScreen):

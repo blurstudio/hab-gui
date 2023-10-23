@@ -168,11 +168,6 @@ Valid image types: JPG, PNG, GIF
 ```json5
 {
     "prepend": {
-        "entry_points": {
-            "cli": {
-                "gui": "hab_gui.cli:gui"
-            }
-        },
         "splash_screen": [
             "Path(s)/To/Images"
         ]

@@ -1,4 +1,10 @@
-import os
+import logging
+import random
+from pathlib import Path
+
+from Qt import QtGui
+
+logger = logging.getLogger(__name__)
 
 
 def entry_point_init(resolver, cmd, cli_args=None, **kwargs):
@@ -68,22 +74,55 @@ def get_splash_image(resolver):
     """
     Randomly grabs an image to use as a splash screen while starting Hab-Gui.
 
-    Valid image formats: JPG, PNG, GIF
-
     A resolver object will be used to grab a site.json config that defines paths
     to any image or image directory.  Those will be distilled down to a list of
     valid images that can be used by the Hab-Gui SplashScreen class.  This method
     will then randomly choose an image from that list.
     """
-    resolved_list = []
-    valid_extentions = [".jpg", ".png", ".gif"]
-    for item in resolver.site.get("splash_screen", {}):
-        if os.path.isdir(item):
-            for scan_obj in os.scandir(item):
-                if scan_obj.is_file:
-                    if any(x in scan_obj.name for x in valid_extentions):
-                        print(scan_obj.name)
-                        resolved_list.append(scan_obj.path)
-    import random
+    try:
+        resolved_list = splash_paths(resolver)
+        return random.choice(resolved_list)
+    except IndexError as e:
+        logging.exception(e)
+        return None
 
-    return random.choice(resolved_list)
+
+_splash_paths = None
+
+
+def splash_paths(resolver, force=False):
+    """Returns a list of all existing splash screen files found on disk.
+    Uses the "splash_screen" list if defined in `resolver.site`. Any directories
+    defined in this list will be expanded to include their direct children.
+    Any file paths will also be included if they exist.
+
+    The resolved list is cached, pass `force=True` to re-calculate the list.
+    """
+    global _splash_paths
+
+    # Return the cached list if it was defined
+    if not force and _splash_paths is not None:
+        return _splash_paths
+
+    paths = resolver.site.get("splash_screen", [])
+    if not paths:
+        # There are no paths to scan, just exit with an empty list
+        _splash_paths = []
+        return _splash_paths
+
+    splash_paths = set()
+    valid_extentions = set(
+        [f".{x.data().decode()}" for x in QtGui.QImageReader.supportedImageFormats()]
+    )
+
+    for item in paths:
+        item = Path(item)
+        if item.is_dir():
+            for scan_obj in item.iterdir():
+                if scan_obj.is_file() and scan_obj.suffix in valid_extentions:
+                    splash_paths.add(str(scan_obj))
+        elif item.is_file() and item.suffix in valid_extentions:
+            splash_paths.add(str(item))
+
+    _splash_paths = list(splash_paths)
+    return _splash_paths

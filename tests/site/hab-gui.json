@@ -6,7 +6,7 @@
             }
         },
         "splash_screen": [
-            "C:\\blur\\code\\_resources\\images"
+            "{relative_root}/images"
         ]
             
     },

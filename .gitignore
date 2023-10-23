@@ -178,3 +178,4 @@ cython_debug/
 
 # Custom
 hab_gui/version.py
+tests/site/images

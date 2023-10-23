@@ -3,8 +3,7 @@ import logging
 import click
 from hab.cli import UriArgument, UriHelpClass
 
-import hab_gui.utils as utils
-
+from . import utils
 from .widgets.splash_screen import SplashScreen
 
 logger = logging.getLogger(__name__)
@@ -30,13 +29,11 @@ def get_application(settings=None, splash=True, **kwargs):
     if not app:
         # Otherwise create a new QApplication instance
         app = QApplication([])
+        splash_image = utils.get_splash_image(settings.resolver)
         if splash:
-            try:
-                splash_image = utils.get_splash_image(settings.resolver)
+            if splash_image:
                 _splash = SplashScreen(splash_image)
                 _splash.show()
-            except Exception:
-                print("No splash screen configured")
 
     return app, _splash
 

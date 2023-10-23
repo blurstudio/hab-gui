@@ -6,6 +6,7 @@ from Qt import QtGui
 
 logger = logging.getLogger(__name__)
 
+logger = logging.getLogger(__name__)
 
 def entry_point_init(resolver, cmd, cli_args=None, **kwargs):
     """Used to apply startup configuration via site config.

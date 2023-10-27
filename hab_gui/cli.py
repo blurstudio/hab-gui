@@ -10,12 +10,21 @@ logger = logging.getLogger(__name__)
 
 
 def get_application(settings=None, splash=True, **kwargs):
-    """Returns the QApplication instance, creating it if required.
+    """Returns the QApplication instance and SplashScreen, creating it if required.
 
-    If settings is passed, then the `hab_gui_init` entry point is processed, any
-    other kwargs are passed to `cli_args` of `hab_gui.utils.entry_point_init`.
+    Args:
+        settings (hab.cli.SharedSettings, optional): If settings is passed, then
+            the `hab_gui_init` entry point is processed.
+        splash (bool, optional): If enabled and the `splash_screen` property of
+            the site config contains an image path. A SplashScreen is created
+            shown and returned.
+        **kwargs: Any other kwargs are passed to `cli_args` of
+            `hab_gui.utils.entry_point_init`.
+
+    Returns:
+        app, splash: The first item is the QApplication instance. The second is
+            the splash screen instance that was shown, or None.
     """
-    # TODO update doc string
     from Qt.QtWidgets import QApplication
 
     global app
@@ -29,8 +38,10 @@ def get_application(settings=None, splash=True, **kwargs):
     if not app:
         # Otherwise create a new QApplication instance
         app = QApplication([])
-        splash_image = utils.get_splash_image(settings.resolver)
+        # Attempt to show a splash screen in case it takes a little while to
+        # fully process the hab configuration
         if splash:
+            splash_image = utils.get_splash_image(settings.resolver)
             if splash_image:
                 _splash = SplashScreen(splash_image)
                 _splash.show()

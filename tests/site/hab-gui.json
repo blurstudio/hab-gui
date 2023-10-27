@@ -8,7 +8,6 @@
         "splash_screen": [
             "{relative_root}/images"
         ]
-            
     },
     "set": {
         "prefs_default": "--prefs"

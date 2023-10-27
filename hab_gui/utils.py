@@ -6,8 +6,6 @@ from Qt import QtGui
 
 logger = logging.getLogger(__name__)
 
-logger = logging.getLogger(__name__)
-
 
 def entry_point_init(resolver, cmd, cli_args=None, **kwargs):
     """Used to apply startup configuration via site config.
@@ -81,12 +79,11 @@ def get_splash_image(resolver):
     valid images that can be used by the Hab-Gui SplashScreen class.  This method
     will then randomly choose an image from that list.
     """
-    try:
-        resolved_list = splash_paths(resolver)
-        return random.choice(resolved_list)
-    except IndexError as e:
-        logging.exception(e)
+    resolved_list = splash_paths(resolver)
+    if not resolved_list:
+        logger.debug("[Splash Image] No valid paths found to show.")
         return None
+    return random.choice(resolved_list)
 
 
 _splash_paths = None

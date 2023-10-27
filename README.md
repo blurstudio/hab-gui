@@ -20,7 +20,7 @@ in hab site json files.
 in your site json file. You can use the example site files that come in the
 [hab](https://github.com/blurstudio/hab/blob/main/tests/site_main.json) and
 [hab-gui](https://github.com/blurstudio/hab-gui/tree/main/tests/site/hab-gui.json)
-repos. 
+repos.
 
 2. Set a HAB_PATHS environment variable.
 - [Bash (Linux)](https://github.com/blurstudio/hab#bash-linux)
@@ -171,6 +171,6 @@ Valid image types: JPG, PNG, GIF
         "splash_screen": [
             "Path(s)/To/Images"
         ]
-    }        
+    }
 }
 ```

@@ -4,7 +4,10 @@
             "cli": {
                 "gui": "hab_gui.cli:gui"
             }
-        }
+        },
+        "splash_screen": [
+            "{relative_root}/images"
+        ]
     },
     "set": {
         "prefs_default": "--prefs"

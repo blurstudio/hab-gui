@@ -22,13 +22,17 @@ in your site json file. You can use the example site files that come in the
 [hab-gui](https://github.com/blurstudio/hab-gui/tree/main/tests/site/hab-gui.json)
 repos.
 
-```bash
-export HAB_PATHS="/path/to/hab-gui/tests/site/hab-gui.json:/path/to/hab/tests/site_main.json"
-```
+2. Set a HAB_PATHS environment variable.
+- [Bash (Linux)](https://github.com/blurstudio/hab#bash-linux)
+- [Bash (Windows, Cygwin)](https://github.com/blurstudio/hab#bash-windows-cygwin)
+- [Command Prompt (Windows)](https://github.com/blurstudio/hab#command-prompt-windows-1)
+- [PowerShell (Windows)](https://github.com/blurstudio/hab#powershell-windows)
+
+
 [hab-gui.json](tests/site/hab-gui.json) extends hab's cli by adding the
 [gui comand](#hab-gui-sub-command)
 
-2. Use hab gui to launch the alias launch window.
+3. Use hab gui to launch the alias launch window.
 
     ```bash
     hab gui launch
@@ -150,6 +154,22 @@ Example:
                     "min_verbosity": {"global": 1, "hab-gui": 3},
                 }
             ]
+        ]
+    }
+}
+```
+## Startup Splash Screen
+A splash screen be enabled by adding image/directory paths to the site.json config.
+The config takes a list entry and can contain full file paths or directory paths
+that contain valid images.
+
+Valid image types: JPG, PNG, GIF
+
+```json5
+{
+    "prepend": {
+        "splash_screen": [
+            "Path(s)/To/Images"
         ]
     }
 }

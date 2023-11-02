@@ -27,7 +27,7 @@ jobs:
 
       - name: Build wheel
         run: |
-          python -m build --wheel
+          python -m build --wheel --sdist
 
       # Upload the built .whl files so we can inspect them even if publish fails
       - name: Upload wheel.

@@ -1,6 +1,8 @@
 import hab
 from Qt import QtWidgets
 
+from .. import utils
+
 
 class AliasLaunchWindow(QtWidgets.QMainWindow):
     """Create a window that can launch applications relevant to a project URI
@@ -85,6 +87,8 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         )
 
     def init_gui(self, uri=None):
+        self.setWindowIcon(utils.Paths.icon("habihat.svg"))
+
         self.window = QtWidgets.QWidget()
         self.layout = QtWidgets.QGridLayout()
 

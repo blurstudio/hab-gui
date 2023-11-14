@@ -2,6 +2,8 @@ import logging
 
 from Qt import QtWidgets
 
+from .. import utils
+
 logger = logging.getLogger(__name__)
 
 
@@ -18,9 +20,9 @@ class PinnedUriButton(QtWidgets.QToolButton):
         parent (Qt.QtWidgets.QWidget, optional): Define a parent for this widget.
     """
 
-    _push_pin = "\U0001F4CC"
-    _text_pin_selected = f"{_push_pin} Pin selected URI"
-    _text_remove_uri = "\u274C Remove pin"
+    _text_main = "\U0001F4CC"
+    _text_pin_selected = "Pin selected URI"
+    _text_remove_uri = "Remove pin"
 
     def __init__(self, resolver, uri_widget, verbosity=0, parent=None):
         super().__init__(parent)
@@ -29,7 +31,8 @@ class PinnedUriButton(QtWidgets.QToolButton):
         self.verbosity = verbosity
 
         self.setToolTip("Select and manage quick access to commonly used URI's.")
-        self.setText(self._push_pin)
+        self.setText(self._text_main)
+        self.setIcon(utils.Paths.icon("pin-outline.svg"))
         self.setPopupMode(self.InstantPopup)
         self.refresh()
 
@@ -65,8 +68,10 @@ class PinnedUriButton(QtWidgets.QToolButton):
 
         # Add management actions and menus
         act = menu.addAction(self._text_pin_selected)
+        act.setIcon(utils.Paths.icon("pin-outline.svg"))
         act.setData("pin")
         remove_menu = menu.addMenu(self._text_remove_uri)
+        remove_menu.setIcon(utils.Paths.icon("pin-off-outline.svg"))
         menu.addSeparator()
 
         # Add existing pinned URI's to both menus

@@ -70,6 +70,27 @@ def make_button_coords(button_list, wrap_length, arrangement):
     return array
 
 
+class Paths:
+    hab_gui = Path(__file__).parent
+    resources = hab_gui / "resources"
+
+    @classmethod
+    def resource_path(cls, arg, *args):
+        if isinstance(arg, str):
+            return cls.resources.joinpath(arg, *args)
+        return arg.joinpath(*args)
+
+    @classmethod
+    def icon(cls, arg, *args, **kwargs):
+        path = cls.resource_path(arg, *args)
+        return QtGui.QIcon(str(path), **kwargs)
+
+    @classmethod
+    def image(cls, arg, *args, **kwargs):
+        path = cls.resource_path(arg, *args)
+        return QtGui.QImage(str(path), **kwargs)
+
+
 def get_splash_image(resolver):
     """
     Randomly grabs an image to use as a splash screen while starting Hab-Gui.

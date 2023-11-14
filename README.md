@@ -174,3 +174,16 @@ Valid image types: JPG, PNG, GIF
     }
 }
 ```
+
+## Auto Refresh
+
+Users are likely to keep the hab launcher open for long periods of time and this
+may lead to them using out of date configuration settings. Hab Launcher has a
+refresh button to let users manually force a refresh. Note that this does not
+refresh the site configuration, configs and distros.
+
+By default it will automatically refresh every 30 minutes(`00:30:00`). You can
+configure this interval by setting `hab_gui_refresh_inverval` in your site
+configuration. This accepts a string in `%H:%M:%S` format using
+[time.strptime](https://docs.python.org/3/library/time.html#time.strptime). An
+empty string will disable this auto-refresh feature.

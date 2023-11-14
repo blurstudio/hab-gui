@@ -29,12 +29,14 @@ class URIComboBox(QtWidgets.QComboBox):
         self.uri_changed.emit(self.uri())
 
     def refresh(self):
+        current = self.uri()
         self.clear()
         if self.uri is None:
             return
         with hab.utils.verbosity_filter(self.resolver, self.verbosity):
             items = self.resolver.dump_forest(self.resolver.configs, indent="")
             self.addItems(items)
+        self.set_uri(current)
 
     def uri(self):
         return self.currentText()

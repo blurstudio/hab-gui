@@ -26,7 +26,7 @@ classifiers = [
 ]
 requires-python = ">=3.6"
 dependencies = [
-    "hab>=0.22.0",
+    "hab>=0.27.0",
     "Qt.py",
     ]
 

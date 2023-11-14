@@ -15,12 +15,6 @@ repos:
             - Flake8-pyproject
             - pep8-naming==0.13.3
 
--   repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v2.2.0
-    hooks:
-    -   id: setup-cfg-fmt
-        args: [--min-py3-version=3.6]
-
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:

@@ -23,6 +23,10 @@ class URILineEdit(QtWidgets.QLineEdit):
     def _emit_uri_changed(self):
         self.uri_changed.emit(self.uri())
 
+    def refresh(self):
+        # Nothing to refresh on this widget
+        pass
+
     def uri(self):
         return self.text()
 

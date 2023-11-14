@@ -1,7 +1,11 @@
+import logging
+
 import hab
-from Qt import QtWidgets
+from Qt import QtCore, QtWidgets
 
 from .. import utils
+
+logger = logging.getLogger(__name__)
 
 
 class AliasLaunchWindow(QtWidgets.QMainWindow):
@@ -45,6 +49,17 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("Hab Launch Aliases")
         self.setFixedWidth(400)
         self.center_window_position()
+
+        # Create a auto-refresh timer by default that forces a refresh of hab.
+        # This can be disabled by setting the site config setting to an empty string.
+        self.refresh_timer = QtCore.QTimer(self)
+        refresh_time = self.resolver.site.get("hab_gui_refresh_inverval", ["00:30:00"])
+        refresh_time = refresh_time[0]
+        if refresh_time:
+            self.refresh_timer.timeout.connect(self.refresh_cache)
+            refresh_time = utils.interval(refresh_time)
+            logger.debug(f"Setting auto-refresh interval to {refresh_time} seconds")
+            self.refresh_timer.start(refresh_time * 1000)
 
     def closeEvent(self, event):  # noqa: N802
         """Saves the currently selected URI on close if prefs are enabled."""
@@ -143,6 +158,13 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
             self.setTabOrder(self.pinned_uris, self.uri_widget)
             self.setTabOrder(self.uri_widget, self.alias_buttons)
             self.setTabOrder(self.alias_buttons, self.pinned_uris)
+
+    @utils.cursor_override()
+    def refresh_cache(self):
+        logger.debug("Refresh cache")
+        self.uri_widget.refresh()
+        self.resolver.clear_caches()
+        self.alias_buttons.refresh()
 
     def uri_changed(self, uri):
         self.alias_buttons.uri = uri

@@ -1,10 +1,25 @@
+import datetime
 import logging
 import random
+import time
+from contextlib import contextmanager
 from pathlib import Path
 
-from Qt import QtGui
+from Qt import QtCore, QtGui, QtWidgets
 
 logger = logging.getLogger(__name__)
+
+
+@contextmanager
+def cursor_override(cursor=QtCore.Qt.BusyCursor):
+    """Change the application cursor to wait while running the context/decorator.
+    Ensures that the cursor is restored even if an exception is raised.
+    """
+    QtWidgets.QApplication.setOverrideCursor(cursor)
+    try:
+        yield
+    finally:
+        QtWidgets.QApplication.restoreOverrideCursor()
 
 
 def entry_point_init(resolver, cmd, cli_args=None, **kwargs):
@@ -46,6 +61,16 @@ def entry_point_init(resolver, cmd, cli_args=None, **kwargs):
         # Evaluate the entry point and initialize it
         func = ep.load()
         func(resolver, cmd, cli_args=cli_args, **kwargs)
+
+
+def interval(interval, fmt="%H:%M:%S"):
+    """Convert interval string to seconds. Uses the `%H:%M:%S` format by default.
+    Source: https://stackoverflow.com/a/10663851
+    """
+    x = time.strptime(interval, fmt)
+    return datetime.timedelta(
+        hours=x.tm_hour, minutes=x.tm_min, seconds=x.tm_sec
+    ).total_seconds()
 
 
 def make_button_coords(button_list, wrap_length, arrangement):

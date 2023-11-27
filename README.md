@@ -81,13 +81,18 @@ and simple buttons to launch aliases. Using the
 [hab entry points](https://github.com/blurstudio/hab#hab-entry-points) system
 you can implement your own widgets extending or completely re-implementing them.
 
-| Feature | Description | Used by | Multiple values |
+<!-- Tooltips used by the table -->
+[tt-group]: ## "The hab-gui feature this entry_point is being used for."
+[tt-multi]: ## "How having multiple entry_points for this group is handled."
+[tt-multi-first]: ## "Only the first entry_point for this group is used, the rest are discarded."
+
+| [Group][tt-group] | Description | Used by | [Multiple][tt-multi] |
 |---|---|---|---|
-| hab_gui.alias.widget | Widget used to display and launch a specific alias for the current URI. | [AliasLaunchWindow](hab_gui/windows/alias_launch_window.py) | Only the first is used, the rest are discarded. |
-| hab_gui.aliases.widget | Class used to display the `hab_gui.alias.widget`'s. | [AliasLaunchWindow](hab_gui/windows/alias_launch_window.py) | Only the first is used, the rest are discarded. |
-| hab_gui.init | Used to customize the init of hab gui's launched from the command line. By default this installs a `sys.excepthook` that captures any python exceptions and shows them in a QMessageBox dialog. See [hab-gui-init.json](tests/site/hab-gui-init.json). | [hab_gui.cli](hab_gui/cli.py) when starting a QApplication instance. | Only the first is used, the rest are discarded. |
-| hab_gui.uri.pin.widget | Class used to allow the user to pinned commonly used URIs. Pinning can be disabled by the site file, or setting this entry_point to `null`. | [AliasLaunchWindow](hab_gui/windows/alias_launch_window.py) | Only the first is used, the rest are discarded. |
-| hab_gui.uri.widget | Class used by the user to choose the current URI they want to launch aliases from. This class can be customized to provide the user with URI's generated from a DB that are not explicitly defined by configs. | [AliasLaunchWindow](hab_gui/windows/alias_launch_window.py) | Only the first is used, the rest are discarded. |
+| hab_gui.alias.widget | Widget used to display and launch a specific alias for the current URI. | [AliasLaunchWindow](hab_gui/windows/alias_launch_window.py) | [First][tt-multi-first] |
+| hab_gui.aliases.widget | Class used to display the `hab_gui.alias.widget`'s. | [AliasLaunchWindow](hab_gui/windows/alias_launch_window.py) | [First][tt-multi-first] |
+| hab_gui.init | Used to customize the init of hab gui's launched from the command line. By default this installs a `sys.excepthook` that captures any python exceptions and shows them in a QMessageBox dialog. See [hab-gui-init.json](tests/site/hab-gui-init.json). | [hab_gui.cli](hab_gui/cli.py) when starting a QApplication instance. | [First][tt-multi-first] |
+| hab_gui.uri.pin.widget | Class used to allow the user to pinned commonly used URIs. Pinning can be disabled by the site file, or setting this entry_point to `null`. | [AliasLaunchWindow](hab_gui/windows/alias_launch_window.py) | [First][tt-multi-first] |
+| hab_gui.uri.widget | Class used by the user to choose the current URI they want to launch aliases from. This class can be customized to provide the user with URI's generated from a DB that are not explicitly defined by configs. | [AliasLaunchWindow](hab_gui/windows/alias_launch_window.py) | [First][tt-multi-first] |
 
 - See [hab-gui.json](tests/site/hab-gui.json) for an example of adding the `gui` sub-command to `hab`.
 - See [hab-gui-alt.json](tests/site/hab-gui-alt.json) for an example of changing the default classes used by `hab gui launch`.

@@ -29,14 +29,14 @@ def entry_point_init(resolver, cmd, cli_args=None, **kwargs):
         {
             "append": {
                 "entry_points": {
-                    "hab_gui_init": {
+                    "hab_gui.init": {
                         "init": "hab_gui.entry_points.message_box:MessageBoxInit"
                     }
                 }
             }
         }
 
-    This uses the site entry_point `hab_gui_init` to initialize a class using
+    This uses the site entry_point `hab_gui.init` to initialize a class using
     the interface defined by `hab_gui.entry_points.BaseInit`. Defaults to
     `hab_gui.entry_points.message_box:MessageBoxInit` which shows a QMessageBox if
     any exceptions are raised. This prevents Qt from closing the application due
@@ -44,7 +44,7 @@ def entry_point_init(resolver, cmd, cli_args=None, **kwargs):
     the object reference to a empty string.
 
     Example of disabling entry point:
-        {"append": {"entry_points": {"hab_gui_init": {"init": ""}}}}`
+        {"append": {"entry_points": {"hab_gui.init": {"init": ""}}}}`
     """
     if cli_args is None:
         cli_args = {}
@@ -52,7 +52,7 @@ def entry_point_init(resolver, cmd, cli_args=None, **kwargs):
     default = {"init": "hab_gui.entry_points.message_box:MessageBoxInit"}
 
     # NOTE: kwargs should be added to allow for future changes to this call
-    eps = resolver.site.entry_points_for_group("hab_gui_init", default=default)
+    eps = resolver.site.entry_points_for_group("hab_gui.init", default=default)
     for ep in eps:
         if not ep.value:
             # Passing an empty value disables processing this entry point

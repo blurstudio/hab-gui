@@ -4,13 +4,13 @@
             "cli": {
                 "gui": "hab_gui.cli:gui"
             },
-            "hab_gui_uri_widget": {
+            "hab_gui.uri.widget": {
                 "uri_widget": "hab_gui.widgets.uri_line_edit:URILineEdit"
             },
-            "hab_gui_alias_widget": {
+            "hab_gui.alias.widget": {
                 "uri_widget": "hab_gui.widgets.alias_button:AliasButton"
             },
-            "hab_gui_uri_pin_widget": {
+            "hab_gui.uri.pin.widget": {
                 "uri_widget": null
             }
         }

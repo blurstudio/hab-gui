@@ -101,11 +101,11 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         """
         # Used to launch a specific alias by `_cls_aliases_widget`
         self._cls_alias_widget = self.load_entry_point(
-            "hab_gui_alias_widget", "hab_gui.widgets.alias_icon_button:AliasIconButton"
+            "hab_gui.alias.widget", "hab_gui.widgets.alias_icon_button:AliasIconButton"
         )
         # Used to display alias launch widgets
         self._cls_aliases_widget = self.load_entry_point(
-            "hab_gui_aliases_widget",
+            "hab_gui.aliases.widget",
             "hab_gui.widgets.alias_button_grid:AliasButtonGrid",
         )
         # Allows the user to refresh hab configuration in case it has changed.
@@ -115,13 +115,13 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         )
         # Allows the user to pin commonly used URI's
         self._cls_uri_pin_widget = self.load_entry_point(
-            "hab_gui_uri_pin_widget",
+            "hab_gui.uri.pin.widget",
             "hab_gui.widgets.pinned_uris_button:PinnedUriButton",
             allow_none=True,
         )
         # Interface the user uses to view and change the current URI.
         self._cls_uri_widget = self.load_entry_point(
-            "hab_gui_uri_widget", "hab_gui.widgets.uri_combobox:URIComboBox"
+            "hab_gui.uri.widget", "hab_gui.widgets.uri_combobox:URIComboBox"
         )
 
     def init_gui(self, uri=None):

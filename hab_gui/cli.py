@@ -14,7 +14,7 @@ def get_application(settings=None, splash=True, **kwargs):
 
     Args:
         settings (hab.cli.SharedSettings, optional): If settings is passed, then
-            the `hab_gui_init` entry point is processed.
+            the `hab_gui.init` entry point is processed.
         splash (bool, optional): If enabled and the `splash_screen` property of
             the site config contains an image path. A SplashScreen is created
             shown and returned.

@@ -5,7 +5,7 @@ import time
 from contextlib import contextmanager
 from pathlib import Path
 
-from Qt import QtCore, QtGui, QtWidgets
+from Qt import QtCompat, QtCore, QtGui, QtWidgets
 
 logger = logging.getLogger(__name__)
 
@@ -171,3 +171,22 @@ def splash_paths(resolver, force=False):
 
     _splash_paths = list(splash_paths)
     return _splash_paths
+
+
+def load_ui(filename, widget, ui_name=""):
+    """Use's Qt's uic loader to load dynamic interfaces onto the imputed widget.
+
+    Args:
+        filename (str): The python filename. Its basename will be split off, and
+            a ui folder will be added. The file ext will be changed to .ui.
+        widget (QWidget): The base widget the ui file will be loaded onto.
+        ui_name (str, optional): Used instead of the basename. This is useful if
+            filename is not the same as the ui file you want to load.
+    """
+    filename = Path(filename)
+
+    if not ui_name:
+        ui_name = filename.stem
+
+    filename = filename.parent / "ui" / f"{ui_name}.ui"
+    QtCompat.loadUi(filename, widget)

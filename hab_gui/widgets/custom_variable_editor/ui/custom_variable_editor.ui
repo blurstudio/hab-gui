@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>600</width>
+    <height>0</height>
+   </size>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTreeWidget" name="uiVariableTREE">
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectItems</enum>
+     </property>
+     <column>
+      <property name="text">
+       <string>Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Value</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QToolButton" name="uiSaveBTN">
+       <property name="toolTip">
+        <string>Save changes to disk.</string>
+       </property>
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="uiResetBTN">
+       <property name="toolTip">
+        <string>Reset any unsaved changes and reload from disk.</string>
+       </property>
+       <property name="text">
+        <string>Reset</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="uiAddVariableBTN">
+       <property name="toolTip">
+        <string>Add new variable</string>
+       </property>
+       <property name="text">
+        <string>+</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="uiRemoveVariableBTN">
+       <property name="toolTip">
+        <string>Remove selected variable</string>
+       </property>
+       <property name="text">
+        <string>-</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="uiEditCurrentItemBTN">
+       <property name="toolTip">
+        <string>Edit current item</string>
+       </property>
+       <property name="text">
+        <string>Edit Current Item</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>uiSaveBTN</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>save()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>79</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>21</x>
+     <y>354</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>uiAddVariableBTN</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>add_variable()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>448</x>
+     <y>280</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>449</x>
+     <y>329</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>uiRemoveVariableBTN</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>remove_variable()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>483</x>
+     <y>280</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>490</x>
+     <y>394</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>uiEditCurrentItemBTN</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>edit_cell()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>509</x>
+     <y>282</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>352</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>uiVariableTREE</sender>
+   <signal>currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)</signal>
+   <receiver>Form</receiver>
+   <slot>current_changed(QTreeWidgetItem*,QTreeWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>566</x>
+     <y>50</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>700</x>
+     <y>53</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>uiResetBTN</sender>
+   <signal>released()</signal>
+   <receiver>Form</receiver>
+   <slot>reset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>26</x>
+     <y>280</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>38</x>
+     <y>358</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>save()</slot>
+  <slot>add_variable()</slot>
+  <slot>remove_variable()</slot>
+  <slot>edit_cell()</slot>
+  <slot>current_changed(QTreeWidgetItem*,QTreeWidgetItem*)</slot>
+  <slot>reset()</slot>
+ </slots>
+</ui>

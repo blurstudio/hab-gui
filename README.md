@@ -13,6 +13,9 @@ to take hab out of the shell.
 - [habw](#habwexe) command allows using hab without popup consoles on windows.
 - Customization of hab-gui using [entry_points](#hab-gui-entry-points) defined
 in hab site json files.
+- Gui for [editing](hab_gui/widgets/custom_variable_editor/custom_variable_editor.py)
+hab [custom variables](https://github.com/blurstudio/hab?tab=readme-ov-file#custom-variables).
+It can be added to the [menu](hab_gui/actions/edit_custom_variables_action.py) using entry points.
 
 # Quickstart
 

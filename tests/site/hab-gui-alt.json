@@ -1,7 +1,7 @@
 {
     "prepend": {
         "entry_points": {
-            "cli": {
+            "hab.cli": {
                 "gui": "hab_gui.cli:gui"
             },
             "hab_gui.uri.widget": {

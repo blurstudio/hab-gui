@@ -1,4 +1,5 @@
 import hab
+from hab.errors import InvalidRequirementError
 from Qt import QtWidgets
 
 from .. import utils
@@ -48,7 +49,16 @@ class AliasButtonGrid(QtWidgets.QWidget):
         self.clear()
         if self.uri is None:
             return
-        cfg = self.resolver.resolve(self.uri)
+        try:
+            cfg = self.resolver.resolve(self.uri)
+        except InvalidRequirementError as error:
+            msg = f"Error resolving URI: {self.uri}"
+            label = QtWidgets.QLabel()
+            label.setText(f"{msg}\n\n{error}")
+            label.setWordWrap(True)
+            self.grid_layout.addWidget(label)
+            raise
+
         with hab.utils.verbosity_filter(self.resolver, self.verbosity):
             alias_list = list(cfg.aliases.keys())
             # So buttons show up in alphabetical order

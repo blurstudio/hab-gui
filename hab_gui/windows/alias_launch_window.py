@@ -177,8 +177,10 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         if uri is None:
             uri = str(self.resolver.user_prefs().uri_check())
         if uri:
-            self.uri_widget.set_uri(uri)
-            self.uri_changed(uri)
+            # This QTimer allows the gui to stay open even if the URI can't
+            # be resolved. For example if the URI depends on a distro that is
+            # no longer installed.
+            QtCore.QTimer.singleShot(0, partial(self.uri_widget.set_uri, uri))
 
         # Ensure the URI widget has focus by default
         self.uri_widget.setFocus()

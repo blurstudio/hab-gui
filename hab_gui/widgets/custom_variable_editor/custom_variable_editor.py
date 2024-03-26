@@ -28,7 +28,6 @@ class CustomVariableEditor(QtWidgets.QWidget):
         self.resolver = resolver
         self.verbosity = verbosity
         utils.load_ui(__file__, self)
-        self.setWindowIcon(utils.Paths.icon("habihat.svg"))
 
         self.uiAddVariableBTN.setIcon(utils.Paths.icon("plus-thick.svg"))
         self.uiEditCurrentItemBTN.setIcon(utils.Paths.icon("pencil-box-outline.svg"))

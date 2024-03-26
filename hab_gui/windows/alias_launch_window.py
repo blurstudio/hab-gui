@@ -131,8 +131,6 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         )
 
     def init_gui(self, uri=None):
-        self.setWindowIcon(utils.Paths.icon("habihat.svg"))
-
         self.main_widget = QtWidgets.QWidget()
         self.layout = QtWidgets.QGridLayout()
 

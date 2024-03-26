@@ -46,6 +46,11 @@ def get_application(settings=None, splash=True, **kwargs):
                 _splash = SplashScreen(splash_image)
                 _splash.show()
 
+        # For a consistent UI, set the window icon for the application. All top
+        # level widgets will inherit this automatically unless they override
+        # it themselves.
+        app.setWindowIcon(utils.Paths.icon("habihat.svg"))
+
     return app, _splash
 
 

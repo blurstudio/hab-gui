@@ -1,5 +1,4 @@
 import logging
-import traceback
 
 from .logging_exception import LoggingExceptionInit
 
@@ -15,9 +14,7 @@ class MessageBoxInit(LoggingExceptionInit):
     def excepthook(self, cls, exception, tb):
         super().excepthook(cls, exception, tb)
 
-        from Qt.QtWidgets import QMessageBox
+        from ..dialogs.error_message_box import ErrorMessageBox
 
-        # Show the user that an exception happened.
-        msg = traceback.format_exception(cls, exception, tb)
-        msg = "".join(msg)
-        QMessageBox.critical(None, "Exception", msg)
+        box = ErrorMessageBox(cls, exception, tb, parent=None)
+        box.exec_()

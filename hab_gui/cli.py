@@ -84,6 +84,22 @@ def launch(settings, verbosity, uri):
 
     settings.resolver._verbosity_target = "hab-gui"
 
+    # The site file can specifically disable user_prefs for verbosity
+    prefs_save_verbosity = settings.resolver.site.get("prefs_save_verbosity", True)
+    # Handle loading verbosity from user_prefs if not explicitly specified.
+    # Unfortunately click's `count` feature doesn't let the cli set verbosity
+    # to zero. Then we could detect if the user wants to force verbosity to zero
+    # or left it as default. For now this just means that you can force a
+    # verbosity of 1 or higher to override the user pref but not zero.
+    if prefs_save_verbosity and not verbosity:
+        user_prefs = settings.resolver.user_prefs()
+        user_prefs.load()
+        if user_prefs.enabled:
+            verbosity_settings = user_prefs.get("verbosity", {})
+            if "hab-gui" in verbosity_settings:
+                verbosity = verbosity_settings["hab-gui"]
+                logger.info(f"Verbosity set to {verbosity} by user_prefs.")
+
     s = Settings(settings.resolver, verbosity, uri=uri)
     window = AliasLaunchWindow(s)
     window.show()

@@ -40,6 +40,7 @@ class AliasButtonGrid(QtWidgets.QWidget):
 
         # Update this widget any time settings are updated
         self.settings.uri_changed.connect(self.refresh)
+        self.settings.verbosity_changed.connect(self.refresh)
 
     def refresh(self):
         self.clear()

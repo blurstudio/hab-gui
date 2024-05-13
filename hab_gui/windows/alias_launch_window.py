@@ -27,6 +27,11 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         parent (Qt.QtWidgets.QWidget, optional): Define a parent for this widget.
     """
 
+    window_title = "Hab Launch - {uri}"
+    """The title of this window. Use a `str.format` style string with the kwarg
+    `uri` to include the currently selected URI.
+    """
+
     def __init__(
         self,
         settings,
@@ -45,7 +50,6 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         self.init_gui(uri)
 
         # Window properties
-        self.setWindowTitle("Hab Launch Aliases")
         self.setFixedWidth(400)
         self.center_window_position()
 
@@ -61,6 +65,12 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
             refresh_time = utils.interval(refresh_time)
             logger.debug(f"Setting auto-refresh interval to {refresh_time} seconds")
             self.refresh_timer.start(refresh_time * 1000)
+
+    def _update_window_title(self, uri):
+        """Updates the window title with a `str.format` style string with the
+        kwarg `uri` to include the currently selected URI.
+        """
+        self.setWindowTitle(self.window_title.format(uri=uri))
 
     def apply_layout(self):
         """Configures the layout of all widgets in this interface."""
@@ -174,6 +184,10 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
 
         # Ensure the URI widget has focus by default
         self.uri_widget.setFocus()
+
+        # Ensure the window title always shows the currently selected URI
+        self.settings.uri_changed.connect(self._update_window_title)
+        self._update_window_title(uri)
 
     @utils.cursor_override()
     def refresh_cache(self, reset_timer=True):

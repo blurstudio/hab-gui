@@ -72,6 +72,7 @@ def gui(ctx):
 @click.pass_obj
 def launch(settings, verbosity, uri):
     """Show a gui letting the user launch applications."""
+    from .settings import Settings
     from .windows.alias_launch_window import AliasLaunchWindow
 
     if isinstance(uri, click.UsageError):
@@ -83,7 +84,8 @@ def launch(settings, verbosity, uri):
 
     settings.resolver._verbosity_target = "hab-gui"
 
-    window = AliasLaunchWindow(settings.resolver, uri=uri, verbosity=verbosity)
+    s = Settings(settings.resolver, verbosity, uri=uri)
+    window = AliasLaunchWindow(s)
     window.show()
     if splash:
         splash.finish(window)

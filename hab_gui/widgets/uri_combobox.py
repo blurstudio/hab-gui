@@ -6,35 +6,32 @@ class URIComboBox(QtWidgets.QComboBox):
     """Create a QComboBox to store a given list of URIs.
 
     Args:
-        resolver (hab.Resolver): The resolver to pull the URI data from Hab.
-        verbosity (int): Pass along a verbosity value for filtering of URIs
+        settings (hab_gui.settings.Settings): Used to access shared hab settings.
         parent (Qt.QtWidgets.QWidget, optional): Define a parent for this widget.
     """
 
-    uri_changed = QtCore.Signal(str)
-
-    def __init__(self, resolver, verbosity=0, parent=None):
+    def __init__(self, settings, parent=None):
         super().__init__(parent)
-        self.resolver = resolver
-        self.verbosity = verbosity
+        self.settings = settings
         self.setEditable(True)
         _translate = QtCore.QCoreApplication.translate
         self.setPlaceholderText(_translate("Launch_Aliases", "Select a URI..."))
         self.lineEdit().setPlaceholderText(self.placeholderText())
         self.refresh()
 
-        self.currentTextChanged.connect(self._emit_uri_changed)
+        self.currentTextChanged.connect(self._uri_changed)
 
-    def _emit_uri_changed(self):
-        self.uri_changed.emit(self.uri())
+    def _uri_changed(self):
+        self.settings.uri = self.uri()
 
     def refresh(self):
         current = self.uri()
         self.clear()
         if self.uri is None:
             return
-        with hab.utils.verbosity_filter(self.resolver, self.verbosity):
-            items = self.resolver.dump_forest(self.resolver.configs, indent="")
+        resolver = self.settings.resolver
+        with hab.utils.verbosity_filter(resolver, self.settings.verbosity):
+            items = resolver.dump_forest(resolver.configs, indent="")
             self.addItems(items)
         self.set_uri(current)
 

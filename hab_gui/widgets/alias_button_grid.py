@@ -11,13 +11,10 @@ class AliasButtonGrid(QtWidgets.QWidget):
     applications.
 
     Args:
-        resolver (hab.Resolver): The resolver to change verbosity settings on.
-        button_wrap_length (int) Inidicates the number of buttons per column/row.
+        settings (hab_gui.settings.Settings): Used to access shared hab settings.
+        button_wrap_length (int) Indicates the number of buttons per column/row.
         button_layout (int) Sets the button layout to be either a horizontal focus
             or a vertical focus.
-        verbosity (int): Change the verbosity setting to this value. If None is passed,
-            all results are be shown without any filtering.
-        uri (string, optional) The project uri that specifies the button aliases.
         button_cls (QToolButton, optional): The button class that populates
             the grid.
         parent (Qt.QtWidgets.QWidget, optional): Define a parent for this widget.
@@ -25,41 +22,41 @@ class AliasButtonGrid(QtWidgets.QWidget):
 
     def __init__(
         self,
-        resolver,
+        settings,
         button_wrap_length,
         button_layout,
-        verbosity,
-        uri=None,
         button_cls=AliasIconButton,
         parent=None,
     ):
         super().__init__(parent)
-        self.resolver = resolver
+        self.settings = settings
         self.button_wrap_length = button_wrap_length
         self.button_layout = button_layout
-        self.verbosity = verbosity
-        self.uri = uri
         self.button_cls = button_cls
 
         self.grid_layout = QtWidgets.QGridLayout(self)
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.grid_layout)
 
+        # Update this widget any time settings are updated
+        self.settings.uri_changed.connect(self.refresh)
+
     def refresh(self):
         self.clear()
-        if self.uri is None:
+        if self.settings.uri is None:
             return
+        resolver = self.settings.resolver
         try:
-            cfg = self.resolver.resolve(self.uri)
+            cfg = resolver.resolve(self.settings.uri)
         except InvalidRequirementError as error:
-            msg = f"Error resolving URI: {self.uri}"
+            msg = f"Error resolving URI: {self.settings.uri}"
             label = QtWidgets.QLabel()
             label.setText(f"{msg}\n\n{error}")
             label.setWordWrap(True)
             self.grid_layout.addWidget(label)
             raise
 
-        with hab.utils.verbosity_filter(self.resolver, self.verbosity):
+        with hab.utils.verbosity_filter(resolver, self.settings.verbosity):
             alias_list = list(cfg.aliases.keys())
             # So buttons show up in alphabetical order
             alias_list.sort()

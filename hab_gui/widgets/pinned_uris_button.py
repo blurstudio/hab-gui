@@ -13,10 +13,9 @@ class PinnedUriButton(QtWidgets.QToolButton):
     from previously saved URI's or add/remove a URI to saved user_prefs.
 
     Args:
-        resolver (hab.Resolver): The resolver used for settings.
+        settings (hab_gui.settings.Settings): Used to access shared hab settings.
         uri_widget (QWidget): The URIComboBox like widget used to get/set the
             current URI from.
-        verbosity (int): Pass along a verbosity value for filtering of URIs
         parent (Qt.QtWidgets.QWidget, optional): Define a parent for this widget.
     """
 
@@ -24,11 +23,10 @@ class PinnedUriButton(QtWidgets.QToolButton):
     _text_pin_selected = "Pin selected URI"
     _text_remove_uri = "Remove pin"
 
-    def __init__(self, resolver, uri_widget, verbosity=0, parent=None):
+    def __init__(self, settings, uri_widget, parent=None):
         super().__init__(parent)
-        self.resolver = resolver
+        self.settings = settings
         self.uri_widget = uri_widget
-        self.verbosity = verbosity
 
         self.setToolTip("Select and manage quick access to commonly used URI's.")
         self.setText(self._text_main)
@@ -91,7 +89,7 @@ class PinnedUriButton(QtWidgets.QToolButton):
         that if prefs are enabled. Returns `set()` otherwise. This will call load
         to ensure the preference file has been loaded.
         """
-        prefs = self.resolver.user_prefs()
+        prefs = self.settings.resolver.user_prefs()
         if prefs.enabled:
             # Ensure the preferences are loaded.
             prefs.load()
@@ -102,7 +100,7 @@ class PinnedUriButton(QtWidgets.QToolButton):
         """Saves URIS to pinned_uris in user_prefs. It will only do that if prefs
         are enabled. This will call load to ensure the preference file has been loaded.
         """
-        prefs = self.resolver.user_prefs()
+        prefs = self.settings.resolver.user_prefs()
         if prefs.enabled:
             # Ensure the preferences are loaded.
             prefs.load()

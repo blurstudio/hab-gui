@@ -4,24 +4,20 @@ from .. import utils
 
 
 class RefreshAction(QtWidgets.QAction):
-    """A QAction that causes the hab_widget to refresh the resolved hab setup and UI.
+    """A QAction that causes the root_widget to refresh the resolved hab and UI.
 
     Args:
-        resolver (hab.Resolver): The resolver used for settings.
-        hab_widget (QWidget): The URI widget menu operations are performed on.
-        verbosity (int, optional): The current verbosity setting.
+        settings (hab_gui.settings.Settings): Used to access shared hab settings.
         parent (Qt.QtWidgets.QWidget, optional): Define a parent for this widget.
     """
 
-    def __init__(self, resolver, hab_widget, verbosity=0, parent=None):
+    def __init__(self, settings, parent=None):
         super().__init__(
             utils.Paths.icon("refresh.svg"),
             "Refresh Hab Config",
             parent,
         )
-        self.hab_widget = hab_widget
-        self.resolver = resolver
-        self.verbosity = verbosity
+        self.settings = settings
         self.setObjectName("refresh_hab_cfg")
 
-        self.triggered.connect(self.hab_widget.refresh_cache)
+        self.triggered.connect(self.settings.root_widget.refresh_cache)

@@ -12,30 +12,24 @@ class EditCustomVariablesAction(QtWidgets.QAction):
     then add or remove variables, and edit their keys and values.
 
     Args:
-        resolver (hab.Resolver): The resolver used for settings.
-        hab_widget (QWidget): The URI widget menu operations are performed on.
-        verbosity (int, optional): The current verbosity setting.
+        settings (hab_gui.settings.Settings): Used to access shared hab settings.
         parent (Qt.QtWidgets.QWidget, optional): Define a parent for this widget.
     """
 
-    def __init__(self, resolver, hab_widget, verbosity=0, parent=None):
+    def __init__(self, settings, parent=None):
         super().__init__(
             utils.Paths.icon("pencil-box-outline.svg"),
             "Edit Custom Variables",
             parent,
         )
-        self.hab_widget = hab_widget
-        self.resolver = resolver
-        self.verbosity = verbosity
+        self.settings = settings
         self.setObjectName("edit_custom_variables")
 
         self.triggered.connect(self.edit_custom_variables)
 
     def edit_custom_variables(self):
-        dlg = CustomVariableEditor.create_dialog(
-            self.resolver, verbosity=self.verbosity, parent=self.parent()
-        )
+        dlg = CustomVariableEditor.create_dialog(self.settings, parent=self.parent())
         dlg.exec_()
 
         # Ensure the hab_gui respects any changes the user may have made
-        self.hab_widget.refresh_cache()
+        self.settings.root_widget.refresh_cache()

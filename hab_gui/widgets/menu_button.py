@@ -19,18 +19,13 @@ class MenuButton(QtWidgets.QToolButton):
     actions like `SeparatorAction`, make sure they all have unique names.
 
     Args:
-        resolver (hab.Resolver): The resolver used for settings.
-        hab_widget (QWidget): The URI widget menu operations are performed on.
-            This likely is also the parent, but may not be.
-        verbosity (int): Pass along a verbosity value for filtering of URIs
+        settings (hab_gui.settings.Settings): Used to access shared hab settings.
         parent (Qt.QtWidgets.QWidget, optional): Define a parent for this widget.
     """
 
-    def __init__(self, resolver, hab_widget, verbosity=0, parent=None):
+    def __init__(self, settings, parent=None):
         super().__init__(parent=parent)
-        self.hab_widget = hab_widget
-        self.resolver = resolver
-        self.verbosity = verbosity
+        self.settings = settings
 
         self.setText("Menu")
         self.setIcon(utils.Paths.icon("menu.svg"))
@@ -55,12 +50,12 @@ class MenuButton(QtWidgets.QToolButton):
 
     def populate_menu(self, menu):
         """Builds the menu by adding QActions defined by the entry_points."""
-        eps = self.resolver.site.entry_points_for_group(
+        eps = self.settings.resolver.site.entry_points_for_group(
             self.entry_point_name, default=self.entry_point_default
         )
         for ep in eps:
             cls = ep.load()
-            act = cls(resolver=self.resolver, hab_widget=self.hab_widget, parent=self)
+            act = cls(settings=self.settings, parent=self)
             menu.addAction(act)
 
     def refresh(self):

@@ -17,11 +17,10 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
     filled with buttons that represent application aliases.
 
     Args:
-        resolver (hab.Resolver): The resolver to change verbosity settings on.
+        settings (hab_gui.settings.Settings): Used to handle gui settings and
+            facilitate emitting signals when settings change.
         uri (str, optional): If passed, use this as the current uri. Otherwise
             the value stored in the users prefs is used.
-        verbosity (int): Change the verbosity setting to this value. If None is passed,
-            all results are be shown without any filtering.
         button_wrap_length (int) Indicates the number of buttons per column/row.
         button_layout (int) Sets the button layout to be either a horizontal focus
             or a vertical focus.
@@ -30,16 +29,15 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
 
     def __init__(
         self,
-        resolver,
+        settings,
         uri=None,
-        verbosity=0,
         button_wrap_length=3,
         button_layout=0,
         parent=None,
     ):
         super().__init__(parent)
-        self.resolver = resolver
-        self.verbosity = verbosity
+        self.settings = settings
+        self.settings.root_widget = self
         self.button_wrap_length = button_wrap_length
         self.button_layout = button_layout
 
@@ -54,7 +52,9 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         # Create a auto-refresh timer by default that forces a refresh of hab.
         # This can be disabled by setting the site config setting to an empty string.
         self.refresh_timer = QtCore.QTimer(self)
-        refresh_time = self.resolver.site.get("hab_gui_refresh_inverval", ["00:30:00"])
+        refresh_time = self.settings.resolver.site.get(
+            "hab_gui_refresh_inverval", ["00:30:00"]
+        )
         refresh_time = refresh_time[0]
         if refresh_time:
             self.refresh_timer.timeout.connect(partial(self.refresh_cache, False))
@@ -86,14 +86,14 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
 
     def closeEvent(self, event):  # noqa: N802
         """Saves the currently selected URI on close if prefs are enabled."""
-        self.resolver.user_prefs().uri = self.uri_widget.uri()
+        self.settings.resolver.user_prefs().uri = self.uri_widget.uri()
         super().closeEvent(event)
 
     def load_entry_point(self, name, default, allow_none=False):
         """Work function that loads the requested entry_point."""
 
         default = {"default": default}
-        eps = self.resolver.site.entry_points_for_group(name, default=default)
+        eps = self.settings.resolver.site.entry_points_for_group(name, default=default)
         if allow_none and (not eps or eps[0].value is None):
             return None
         if not eps:
@@ -134,46 +134,38 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         self.main_widget = QtWidgets.QWidget()
         self.layout = QtWidgets.QGridLayout()
 
-        self.uri_widget = self._cls_uri_widget(
-            self.resolver, verbosity=self.verbosity, parent=self
-        )
+        self.uri_widget = self._cls_uri_widget(self.settings, parent=self)
 
         # If prefs are enabled, insert the Pinned URI widget
-        self.prefs_enabled = self.resolver.user_prefs().enabled
+        self.prefs_enabled = self.settings.resolver.user_prefs().enabled
         if self._cls_uri_pin_widget is None:
             # The pinning widget can be disabled by setting the entry point to null
             self.prefs_enabled = False
 
         # Create a refresh button
         if self._cls_menu_button:
-            self.menu_button = self._cls_menu_button(
-                self.resolver, verbosity=self.verbosity, hab_widget=self
-            )
+            self.menu_button = self._cls_menu_button(self.settings)
 
         if self.prefs_enabled:
             self.pinned_uris = self._cls_uri_pin_widget(
-                self.resolver, self.uri_widget, verbosity=self.verbosity, parent=self
+                self.settings, self.uri_widget, parent=self
             )
             self.layout.addWidget(self.pinned_uris, 0, 0)
             self.pinned_uris.uri_widget = self.uri_widget
 
         self.alias_buttons = self._cls_aliases_widget(
-            self.resolver,
+            self.settings,
             self.button_wrap_length,
             self.button_layout,
-            self.verbosity,
             button_cls=self._cls_alias_widget,
             parent=self,
         )
 
         self.apply_layout()
 
-        # Connect signals
-        self.uri_widget.uri_changed.connect(self.uri_changed)
-
         # Check for stored URI and apply it as the current text
         if uri is None:
-            uri = str(self.resolver.user_prefs().uri_check())
+            uri = str(self.settings.resolver.user_prefs().uri_check())
         if uri:
             # This QTimer allows the gui to stay open even if the URI can't
             # be resolved. For example if the URI depends on a distro that is
@@ -198,15 +190,11 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
                 self.refresh_timer.stop()
 
             self.uri_widget.refresh()
-            self.resolver.clear_caches()
+            self.settings.resolver.clear_caches()
             self.alias_buttons.refresh()
         finally:
             if reset_timer and running:
                 self.refresh_timer.start()
-
-    def uri_changed(self, uri):
-        self.alias_buttons.uri = uri
-        self.alias_buttons.refresh()
 
     def center_window_position(self):
         # Place window onto screen center

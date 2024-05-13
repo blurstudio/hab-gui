@@ -16,17 +16,14 @@ class CustomVariableEditor(QtWidgets.QWidget):
     set to `True` in the top level dict.
 
     Args:
-        resolver (hab.Resolver): The resolver to change verbosity settings on.
-        verbosity (int): Change the verbosity setting to this value. If None is passed,
-            all results are be shown without any filtering.
+        settings (hab_gui.settings.Settings): Used to access shared hab settings.
         parent (Qt.QtWidgets.QWidget, optional): Define a parent for this widget.
     """
 
-    def __init__(self, resolver, verbosity=0, parent=None):
+    def __init__(self, settings, parent=None):
         super().__init__(parent)
         self._refresh_on_show = True
-        self.resolver = resolver
-        self.verbosity = verbosity
+        self.settings = settings
         utils.load_ui(__file__, self)
 
         self.uiAddVariableBTN.setIcon(utils.Paths.icon("plus-thick.svg"))
@@ -92,11 +89,12 @@ class CustomVariableEditor(QtWidgets.QWidget):
     @utils.cursor_override()
     def refresh(self):
         self._is_refreshing = True
+        resolver = self.settings.resolver
         try:
             self.uiVariableTREE.clear()
 
-            for forest in (self.resolver.configs, self.resolver.distros):
-                for row in self.resolver.dump_forest(forest, attr=None):
+            for forest in (resolver.configs, resolver.distros):
+                for row in resolver.dump_forest(forest, attr=None):
                     parser = row.node
                     if parser.filename:
                         if parser.load(parser.filename).get("variable_editor", False):
@@ -129,7 +127,7 @@ class CustomVariableEditor(QtWidgets.QWidget):
 
     def reset(self):
         """Revert any un-saved changes."""
-        self.resolver.clear_caches()
+        self.settings.resolver.clear_caches()
         self.refresh()
 
     def save(self):
@@ -146,13 +144,11 @@ class CustomVariableEditor(QtWidgets.QWidget):
             self.refresh()
 
     @classmethod
-    def create_dialog(cls, resolver, verbosity=0, title="Edit Variables", parent=None):
+    def create_dialog(cls, resolver, title="Edit Variables", parent=None):
         """Create a simple standalone QDialog containing this widget.
 
         Args:
-            resolver (hab.Resolver): The resolver to change verbosity settings on.
-            verbosity (int): Change the verbosity setting to this value. If None is passed,
-                all results are be shown without any filtering.
+            resolver (hab.Resolver): The resolver to change custom variables on.
             title (str, optional): The window title of the created dialog.
             parent (Qt.QtWidgets.QWidget, optional): Define a parent for this widget.
         """
@@ -160,6 +156,6 @@ class CustomVariableEditor(QtWidgets.QWidget):
         dlg.setWindowTitle(title)
         dlg.setWindowIcon(utils.Paths.icon("pencil-box-outline.svg"))
         layout = QtWidgets.QVBoxLayout(dlg)
-        dlg.uiVariableWGT = cls(resolver, verbosity=verbosity, parent=dlg)
+        dlg.uiVariableWGT = cls(resolver, parent=dlg)
         layout.addWidget(dlg.uiVariableWGT)
         return dlg

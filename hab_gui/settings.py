@@ -54,7 +54,7 @@ class Settings(QObject):
             user_prefs.load()
             user_prefs.setdefault("verbosity", {})["hab-gui"] = value
             user_prefs.save()
-            logger.warning(f"User prefs verbosity saved to {user_prefs.filename}")
+            logger.debug(f"User prefs verbosity saved to {user_prefs.filename}")
 
     @property
     def uri(self):

@@ -29,6 +29,17 @@ class Settings(QObject):
         self.resolver = resolver
         self.root_widget = root_widget
 
+    def load_entry_point(self, name, default, allow_none=False):
+        """Work function that loads the requested entry_point defined in site."""
+
+        default = {"default": default}
+        eps = self.resolver.site.entry_points_for_group(name, default=default)
+        if allow_none and (not eps or eps[0].value is None):
+            return None
+        if not eps:
+            raise ValueError(f"A valid entry_point for {name} must be defined")
+        return eps[0].load()
+
     @property
     def verbosity(self):
         """The verbosity setting used by hab_gui.

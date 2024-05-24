@@ -99,44 +99,33 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         self.settings.resolver.user_prefs().uri = self.uri_widget.uri()
         super().closeEvent(event)
 
-    def load_entry_point(self, name, default, allow_none=False):
-        """Work function that loads the requested entry_point."""
-
-        default = {"default": default}
-        eps = self.settings.resolver.site.entry_points_for_group(name, default=default)
-        if allow_none and (not eps or eps[0].value is None):
-            return None
-        if not eps:
-            raise ValueError(f"A valid entry_point for {name} must be defined")
-        return eps[0].load()
-
     def process_entry_points(self):
         """Loads the classes defined by the site entry_point system.
         These are later initialized by init_gui to create the UI.
         """
         # Used to launch a specific alias by `_cls_aliases_widget`
-        self._cls_alias_widget = self.load_entry_point(
+        self._cls_alias_widget = self.settings.load_entry_point(
             "hab_gui.alias.widget", "hab_gui.widgets.alias_icon_button:AliasIconButton"
         )
         # Used to display alias launch widgets
-        self._cls_aliases_widget = self.load_entry_point(
+        self._cls_aliases_widget = self.settings.load_entry_point(
             "hab_gui.aliases.widget",
             "hab_gui.widgets.alias_button_grid:AliasButtonGrid",
         )
         # Allows the user to refresh hab configuration in case it has changed.
-        self._cls_menu_button = self.load_entry_point(
+        self._cls_menu_button = self.settings.load_entry_point(
             "hab_gui.uri.menu.widget",
             "hab_gui.widgets.menu_button:MenuButton",
             allow_none=True,
         )
         # Allows the user to pin commonly used URI's
-        self._cls_uri_pin_widget = self.load_entry_point(
+        self._cls_uri_pin_widget = self.settings.load_entry_point(
             "hab_gui.uri.pin.widget",
             "hab_gui.widgets.pinned_uris_button:PinnedUriButton",
             allow_none=True,
         )
         # Interface the user uses to view and change the current URI.
-        self._cls_uri_widget = self.load_entry_point(
+        self._cls_uri_widget = self.settings.load_entry_point(
             "hab_gui.uri.widget", "hab_gui.widgets.uri_combobox:URIComboBox"
         )
 

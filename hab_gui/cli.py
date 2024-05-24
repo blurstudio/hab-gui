@@ -1,7 +1,10 @@
 import logging
+import sys
 
 import click
-from hab.cli import UriArgument, UriHelpClass
+from hab.cli import UriArgument
+from hab.errors import InvalidAliasError
+from hab.user_prefs import UriObj
 
 from . import utils
 from .widgets.splash_screen import SplashScreen
@@ -54,13 +57,36 @@ def get_application(settings=None, splash=True, **kwargs):
     return app, _splash
 
 
+def launch_alias(cli_settings, settings, alias_name, args=None):
+    """Runs the requested alias.
+
+    Args:
+        alias_name (str): The alias name to run.
+        args (list): Additional arguments for the command to be run by subprocess.
+            This should be a list of each individual string argument. If a kwarg
+            is being passed it should be passed as two items. ['--key', 'value'].
+    """
+    try:
+        cli_settings.write_script(
+            settings.uri, create_launch=True, launch=alias_name, exit=True, args=args
+        )
+    except InvalidAliasError as error:
+        from Qt.QtWidgets import QMessageBox
+
+        # No need to show the full traceback for this error, just show simple
+        # message telling them the alias is invalid.
+        logger.warning(str(error))
+        QMessageBox.critical(None, "Invalid Alias Name", str(error))
+        sys.exit(1)
+
+
 @click.group()
 @click.pass_context
 def gui(ctx):
     """Run hab commands using gui mode"""
 
 
-@gui.command(cls=UriHelpClass)
+@gui.command(context_settings=dict(ignore_unknown_options=True))
 @click.option(
     "-v",
     "--verbose",
@@ -68,17 +94,36 @@ def gui(ctx):
     count=True,
     help="Show increasingly detailed output. Can be used up to 3 times.",
 )
-@click.argument("uri", cls=UriArgument, required=False)
+@click.argument("uri", cls=UriArgument, required=False, prompt=False)
+@click.argument("alias", required=False)
+# Pass all remaining arguments to the requested alias
+@click.argument("args", nargs=-1, type=click.UNPROCESSED)
 @click.pass_obj
-def launch(settings, verbosity, uri):
-    """Show a gui letting the user launch applications."""
+def launch(settings, verbosity, uri, alias, args):
+    """Show a gui letting the user launch applications or choose URI's.
+
+    If ALIAS is omitted then the Hab Launcher is shown. This lets the
+    user choose URI's and quickly launch aliases.
+
+    If you provide an AIAS instead of showing the HAB Launcher it will directly
+    launch the requested alias without showing a UI. All trailing ARGS are passed
+    to the launched alias. However, if the dash URI is passed it will use the URI
+    stored in user preferences. If that URI has expired it will show the
+    URI Picker allowing the user to choose the URI. If the shift key is pressed
+    it will always show the URI Picker.
+    """
     from .settings import Settings
-    from .windows.alias_launch_window import AliasLaunchWindow
 
     if isinstance(uri, click.UsageError):
         # Launch doesn't require a URI, but if its not passed a UsageError
         # is returned by UriArgument. Convert that to None.
         uri = None
+
+    # If the user didn't pass the `-` URI, don't show the URI Picker
+    is_dash = False
+    if isinstance(uri, UriObj):
+        uri = uri.uri
+        is_dash = True
 
     app, splash = get_application(settings, uri=uri, verbosity=verbosity)
 
@@ -101,7 +146,26 @@ def launch(settings, verbosity, uri):
                 logger.info(f"Verbosity set to {verbosity} by user_prefs.")
 
     s = Settings(settings.resolver, verbosity, uri=uri)
-    window = AliasLaunchWindow(s)
+
+    if alias:
+        # If an alias was passed, launch it, possibly asking to update the URI
+        from .dialogs.uri_picker_dialog import UriPickerDialog
+
+        if not is_dash or not UriPickerDialog.should_show(s, alias=alias):
+            launch_alias(settings, s, alias, args=args)
+            if splash:
+                splash.close()
+            return
+
+        logger.info("Showing the URI Picker dialog.")
+        window = UriPickerDialog(s, alias=alias)
+        window.accepted.connect(lambda: launch_alias(settings, s, alias, args=args))
+    else:
+        # Otherwise Show the alias launcher so the user can also choose aliases
+        from .windows.alias_launch_window import AliasLaunchWindow
+
+        window = AliasLaunchWindow(s)
+
     window.show()
     if splash:
         splash.finish(window)

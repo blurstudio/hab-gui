@@ -1,4 +1,4 @@
 click>=7.1.2
-hab>=0.27.0
+hab>=0.39.0
 Pygments
 Qt.py

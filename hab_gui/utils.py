@@ -190,3 +190,33 @@ def load_ui(filename, widget, ui_name=""):
 
     filename = filename.parent / "ui" / f"{ui_name}.ui"
     QtCompat.loadUi(filename, widget)
+
+
+@contextmanager
+def block_signals(objs):
+    """Block Qt signals while inside this with statement.
+
+    Example::
+
+        with utils.block_signals(combo):
+            combo.setCurrentIndex(0)
+
+    Args:
+        objs (list): List of Qt.QtCore.QObject's to block signals for.
+
+    Yields:
+        List of (bool, QWidget) tuples where the bool is the widget's previous
+            blocking state.
+    """
+
+    # Store previous state
+    blocked = [(o, o.signalsBlocked()) for o in objs]
+
+    for o in objs:
+        o.blockSignals(True)
+
+    try:
+        yield list(blocked)
+    finally:
+        for o, b in blocked:
+            o.blockSignals(b)

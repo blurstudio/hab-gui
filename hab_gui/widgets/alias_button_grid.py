@@ -67,10 +67,6 @@ class AliasButtonGrid(QtWidgets.QWidget):
         for button_name, button_coord in button_coords.items():
             button = self.button_cls(cfg, button_name)
             self.grid_layout.addWidget(button, button_coord[0], button_coord[1])
-        self.spacer_item = QtWidgets.QSpacerItem(
-            20, 0, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
-        self.grid_layout.addItem(self.spacer_item, self.grid_layout.rowCount(), 0, 1, 1)
 
     def clear(self):
         while self.grid_layout.count():

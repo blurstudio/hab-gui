@@ -80,6 +80,16 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         if self._cls_menu_button:
             self.layout.addWidget(self.menu_button, 0, column_uri_widget + 1)
         self.layout.addWidget(self.alias_buttons, 1, 0, 1, -1)
+
+        # Add the footer_widget if used, otherwise add a spacer
+        if self._cls_footer_widget:
+            self.layout.addWidget(self.footer_widget, 2, 0, 1, -1)
+        else:
+            self.spacer_item = QtWidgets.QSpacerItem(
+                0, 0, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+            )
+            self.layout.addItem(self.spacer_item, self.layout.rowCount(), 0, 1, -1)
+
         self.main_widget.setLayout(self.layout)
 
         # Ensure the tab order is intuitive. This doesn't come for free because
@@ -128,6 +138,12 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         self._cls_uri_widget = self.settings.load_entry_point(
             "hab_gui.uri.widget", "hab_gui.widgets.uri_combobox:URIComboBox"
         )
+        # A footer widget shown under the aliases widget
+        self._cls_footer_widget = self.settings.load_entry_point(
+            "hab_gui.footer.widget",
+            None,
+            allow_none=True,
+        )
 
     def init_gui(self, uri=None):
         self.main_widget = QtWidgets.QWidget()
@@ -159,6 +175,10 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
             button_cls=self._cls_alias_widget,
             parent=self,
         )
+
+        # If specified add a footer widget under the aliases widget
+        if self._cls_footer_widget:
+            self.footer_widget = self._cls_footer_widget(self.settings)
 
         self.apply_layout()
 

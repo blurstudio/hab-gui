@@ -5,11 +5,12 @@ Please make sure to update the sources table when adding or updating images.
 
 | File | Source | Notes | Author |
 |---|---|---|---|
+| ![](hab_gui/resources/arrow-left-top-bold.svg) [arrow-left-top-bold.svg](hab_gui/resources/arrow-left-top-bold.svg) | https://pictogrammers.com/library/mdi/icon/arrow-left-top-bold/ |  | [Colton Wiscombe](https://pictogrammers.com/contributor/Xenomorph99/) |
 | ![](hab_gui/resources/content-save.svg) [content-save.svg](hab_gui/resources/content-save.svg) | https://pictogrammers.com/library/mdi/icon/content-save/ |  | Google |
 | ![](hab_gui/resources/habihat-white.svg) [habihat-white.svg](hab_gui/resources/habihat-white.svg) |  |  | Blur Studio |
 | ![](hab_gui/resources/habihat.svg) [habihat.svg](hab_gui/resources/habihat.svg) |  |  | Blur Studio |
 | ![](hab_gui/resources/menu.svg) [menu.svg](hab_gui/resources/menu.svg) | https://pictogrammers.com/library/mdi/icon/menu/ |  | Google |
-| ![](hab_gui/resources/minus-thick.svg) [minus-thick.svg](hab_gui/resources/minus-thick.svg) | https://pictogrammers.com/library/mdi/icon/minus-thick/ |  | [Colton Wiscombe](https://pictogrammers.com/library/mdi/icon/minus-thick/) |
+| ![](hab_gui/resources/minus-thick.svg) [minus-thick.svg](hab_gui/resources/minus-thick.svg) | https://pictogrammers.com/library/mdi/icon/minus-thick/ |  | [Colton Wiscombe](https://pictogrammers.com/contributor/Xenomorph99/) |
 | ![](hab_gui/resources/pencil-box-outline.svg) [pencil-box-outline.svg](hab_gui/resources/pencil-box-outline.svg) | https://pictogrammers.com/library/mdi/icon/pencil-box-outline/ |  | [Austin Andrews](https://pictogrammers.com/contributor/Templarian/) |
 | ![](hab_gui/resources/pin-off-outline.svg) [pin-off-outline.svg](hab_gui/resources/pin-off-outline.svg) | https://pictogrammers.com/library/mdi/icon/pin-off-outline/ |  | [At Abbey's side](https://pictogrammers.com/library/mdi/icon/pin-off-outline/) |
 | ![](hab_gui/resources/pin-outline.svg) [pin-outline.svg](hab_gui/resources/pin-outline.svg) | https://pictogrammers.com/library/mdi/icon/pin-outline/ |  | Google |

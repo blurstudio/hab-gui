@@ -9,6 +9,7 @@ to take hab out of the shell.
 
 - Gui for selecting hab URI's and launching aliases.
 - Gui for setting the current uri.
+- Gui for selecting [optional distros](#optional-distros-gui).
 - [hab gui sub-command](#hab-gui-sub-command)
 - [habw](#habwexe) command allows using hab without popup consoles on windows.
 - Customization of hab-gui using [entry_points](#hab-gui-entry-points) defined
@@ -94,6 +95,7 @@ you can implement your own widgets extending or completely re-implementing them.
 |---|---|---|---|
 | hab_gui.alias.widget | Widget used to display and launch a specific alias for the current URI. | [AliasLaunchWindow](hab_gui/windows/alias_launch_window.py) | [First][tt-multi-first] |
 | hab_gui.aliases.widget | Class used to display the `hab_gui.alias.widget`'s. | [AliasLaunchWindow](hab_gui/windows/alias_launch_window.py) | [First][tt-multi-first] |
+| hab_gui.footer.widget | A widget class shown under the alias buttons in the AliasLaunchWindow. For example, [Optinal Distros](#optional-distros-gui) is a interface for choosing optional distros for the current URI. | [AliasLaunchWindow](hab_gui/windows/alias_launch_window.py) | [First][tt-multi-first] |
 | hab_gui.init | Used to customize the init of hab gui's launched from the command line. By default this installs a `sys.excepthook` that captures any python exceptions and shows them in a QMessageBox dialog. See [hab-gui-init.json](tests/site/hab-gui-init.json). | [hab_gui.cli](hab_gui/cli.py) when starting a QApplication instance. | [First][tt-multi-first] |
 | hab_gui.uri.menu.actions | Used to customize the menu shown by `hab_gui.uri.menu.widget`. This should reference `QAction` subclasses conforming to [hab_gui.actions.refresh_action.RefreshAction](hab_gui/actions/refresh_action.py). | [MenuButton](hab_gui/widgets/menu_button.py) | [All][tt-multi-all] |
 | hab_gui.uri.menu.widget | Class used to show a menu interface on the right of `hab_gui.uri.widget`. This can be omitted by setting this entry_point to `null`. | [AliasLaunchWindow](hab_gui/windows/alias_launch_window.py) | [First][tt-multi-first] |
@@ -200,3 +202,32 @@ configure this interval by setting `hab_gui_refresh_inverval` in your site
 configuration. This accepts a string in `%H:%M:%S` format using
 [time.strptime](https://docs.python.org/3/library/time.html#time.strptime). An
 empty string will disable this auto-refresh feature.
+
+## Optional Distros GUI
+
+This widget allows you to present users with additional plugins that only some
+of them might need. The default implementation respects the
+["enabled by default option"](https://github.com/blurstudio/hab#optional-distros). It is shown below the Alias button grid.
+
+Once a user modifies any of the check boxes these changes will be saved in the user
+prefs if enabled. These user prefs are stored per top level URI so users don't have
+to micromanage the settings for every single URI they use. This behavior can be changed
+by sub-classing `DistroPicker` and re-implementing the `standardize_uri` method.
+The `Reset to defaults` button on the right allows users to clear their preferences
+for that URI and reset it to the defaults.
+
+The optional distros widget can be enabled by setting the entry point
+`hab_gui.footer.widget` to the `hab_gui.widgets.distro_picker:DistroPicker`
+class in your site json file.
+```json5
+{
+    "prepend": {
+        "entry_points": {
+            "hab_gui.footer.widget": {
+                "default": "hab_gui.widgets.distro_picker:DistroPicker"
+            }
+        }
+    }
+}
+
+```

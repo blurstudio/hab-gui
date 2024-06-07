@@ -69,6 +69,24 @@ class Settings(QObject):
             user_prefs.save()
             logger.debug(f"User prefs verbosity saved to {user_prefs.filename}")
 
+    def user_pref(self, key, default=None):
+        """Returns the value for a specific user_prefs setting or default."""
+        user_prefs = self.resolver.user_prefs()
+        if user_prefs.enabled:
+            user_prefs.load()
+            return user_prefs.get(key, default)
+        return default
+
+    def set_user_pref(self, key, value):
+        """Update a specific user_pref and save prefs to disk."""
+        user_prefs = self.resolver.user_prefs()
+        if user_prefs.enabled:
+            user_prefs.load()
+            user_prefs[key] = value
+            user_prefs.save()
+            return True
+        return False
+
     @property
     def uri(self):
         return self._uri

@@ -192,8 +192,8 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
             if reset_timer and running:
                 self.refresh_timer.stop()
 
-            self.uri_widget.refresh()
             self.settings.resolver.clear_caches()
+            self.uri_widget.refresh()
             self.alias_buttons.refresh()
         finally:
             if reset_timer and running:

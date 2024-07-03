@@ -19,8 +19,10 @@ class Settings(QObject):
 
     verbosity_changed = Signal(int)
     """Signal emitted any time the verbosity property is updated, passing the new value."""
+    uri_changing = Signal(str)
+    """Signal emitted just before the URI will be updated, passing the new URI."""
     uri_changed = Signal(str)
-    """Signal emitted any time the URI is updated, passing the new URI."""
+    """Signal emitted just after the URI has been updated, passing the new URI."""
 
     def __init__(self, resolver, verbosity, uri=None, root_widget=None, parent=None):
         super().__init__(parent=parent)
@@ -73,5 +75,6 @@ class Settings(QObject):
 
     @uri.setter
     def uri(self, uri):
+        self.uri_changing.emit(uri)
         self._uri = uri
         self.uri_changed.emit(uri)

@@ -79,6 +79,7 @@ jobs:
         with:
           name: coverage-${{ matrix.os }}-${{ matrix.python }}
           path: .coverage.*
+          include-hidden-files: true
           retention-days: 1
 
   coverage:

@@ -24,7 +24,7 @@ class URILineEdit(QtWidgets.QLineEdit):
         pass
 
     def uri(self):
-        return self.text()
+        return self.text().strip()
 
     def set_uri(self, uri):
         self.setText(uri)

@@ -36,7 +36,7 @@ class URIComboBox(QtWidgets.QComboBox):
         self.set_uri(current)
 
     def uri(self):
-        return self.currentText()
+        return self.currentText().strip()
 
     def set_uri(self, uri):
         # If the uri is already an item in the combo box, select it

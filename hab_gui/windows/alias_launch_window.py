@@ -63,6 +63,8 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         if refresh_time:
             self.refresh_timer.timeout.connect(partial(self.refresh_cache, False))
             refresh_time = utils.interval(refresh_time)
+            # Newer python/Qt don't implicitly convert floats to ints
+            refresh_time = int(refresh_time)
             logger.debug(f"Setting auto-refresh interval to {refresh_time} seconds")
             self.refresh_timer.start(refresh_time * 1000)
 

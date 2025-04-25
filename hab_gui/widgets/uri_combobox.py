@@ -20,6 +20,7 @@ class URIComboBox(QtWidgets.QComboBox):
         self.refresh()
 
         self.currentTextChanged.connect(self._uri_changed)
+        self.settings.verbosity_changed.connect(self.refresh)
 
     def _uri_changed(self):
         self.settings.uri = self.uri()

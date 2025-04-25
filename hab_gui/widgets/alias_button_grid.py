@@ -1,9 +1,13 @@
+import logging
+
 import hab
 from hab.errors import InvalidRequirementError
 from Qt import QtWidgets
 
 from .. import utils
 from .alias_icon_button import AliasIconButton
+
+logger = logging.getLogger(__name__)
 
 
 class AliasButtonGrid(QtWidgets.QWidget):
@@ -50,12 +54,17 @@ class AliasButtonGrid(QtWidgets.QWidget):
         try:
             cfg = resolver.resolve(self.settings.uri)
         except InvalidRequirementError as error:
+            # Show the user that there is a problem with this URI and log the
+            # exception instead of raising it. The user doesn't need to be
+            # confronted with a error dialog, and this is likely being called
+            # from a signal, so raising the exception won't stop code execution.
             msg = f"Error resolving URI: {self.settings.uri}"
             label = QtWidgets.QLabel()
             label.setText(f"{msg}\n\n{error}")
             label.setWordWrap(True)
             self.grid_layout.addWidget(label)
-            raise
+            logger.exception(msg)
+            return
 
         with hab.utils.verbosity_filter(resolver, self.settings.verbosity):
             alias_list = list(cfg.aliases.keys())

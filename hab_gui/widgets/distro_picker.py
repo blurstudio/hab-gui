@@ -1,9 +1,14 @@
+import logging
+
+from hab.errors import InvalidRequirementError
 from hab.solvers import Solver
 from hab.utils import NotSet
 from Qt.QtCore import QTimer
 
 from .. import utils
 from .name_picker import NamePicker
+
+logger = logging.getLogger(__name__)
 
 
 class DistroPicker(NamePicker):
@@ -62,8 +67,15 @@ class DistroPicker(NamePicker):
 
     def refresh(self, uri):
         resolver = self.settings.resolver
-        cfg = resolver.resolve(uri)
-        optional = cfg.optional_distros
+        try:
+            cfg = resolver.resolve(uri)
+        except InvalidRequirementError:
+            # The hab config is invalid. Handle this by clearing the name_tree
+            # and just log the error, instead of raising the error to the user.
+            logger.info(f"Error resolving URI: {uri}", exc_info=True)
+            optional = {}
+        else:
+            optional = cfg.optional_distros
         if optional is NotSet:
             optional = {}
         self.set_names(optional, uri=uri)

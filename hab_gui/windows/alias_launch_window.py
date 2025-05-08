@@ -104,11 +104,6 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
             else:
                 self.setTabOrder(self.uri_widget, self.pinned_uris)
 
-    def closeEvent(self, event):  # noqa: N802
-        """Saves the currently selected URI on close if prefs are enabled."""
-        self.settings.resolver.user_prefs().uri = self.uri_widget.uri()
-        super().closeEvent(event)
-
     def process_entry_points(self):
         """Loads the classes defined by the site entry_point system.
         These are later initialized by init_gui to create the UI.
@@ -182,9 +177,9 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
 
         self.apply_layout()
 
-        # Check for stored URI and apply it as the current text
+        # If URI is not specified use the one defined in settings
         if uri is None:
-            uri = str(self.settings.resolver.user_prefs().uri_check())
+            uri = self.settings.uri
         if uri:
             # This QTimer allows the gui to stay open even if the URI can't
             # be resolved. For example if the URI depends on a distro that is
@@ -196,7 +191,6 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
 
         # Ensure the window title always shows the currently selected URI
         self.settings.uri_changed.connect(self._update_window_title)
-        self._update_window_title(uri)
 
     @utils.cursor_override()
     def refresh_cache(self, reset_timer=True):

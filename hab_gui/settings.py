@@ -12,7 +12,8 @@ class Settings(QObject):
         resolver (hab.Resolver): The hab resolver to get information from.
         verbosity (int): Change the verbosity setting to this value. If None is
             passed, all results are be shown without any filtering.
-        uri (str, optional): Use this as the current URI.
+        uri (str, optional): Use this as the current URI. If None then will attempt
+            to load the saved URI from user_pref's if enabled.
         root_widget (Qt.QtWidgets.QWidget, optional): The main Qt widget, likely
             a top level widget. For example `AliasLaunchWindow`.
     """
@@ -27,6 +28,9 @@ class Settings(QObject):
     def __init__(self, resolver, verbosity, uri=None, root_widget=None, parent=None):
         super().__init__(parent=parent)
         self._verbosity = verbosity
+        # If no URI was provided attempt to load it from the user_prefs
+        if uri is None:
+            uri = str(resolver.user_prefs().uri_check())
         self._uri = uri
         self.resolver = resolver
         self.root_widget = root_widget
@@ -93,6 +97,11 @@ class Settings(QObject):
 
     @uri.setter
     def uri(self, uri):
+        changed = self._uri != uri
         self.uri_changing.emit(uri)
         self._uri = uri
         self.uri_changed.emit(uri)
+        # Update the URI saved in user_prefs. This makes it possible for an alias
+        # using the `-` URI to use the same URI they just selected in this GUI.
+        if changed:
+            self.set_user_pref("uri", uri)

@@ -29,7 +29,7 @@ class MenuButton(QtWidgets.QToolButton):
 
         self.setText("Menu")
         self.setIcon(utils.Paths.icon("menu.svg"))
-        self.setPopupMode(self.InstantPopup)
+        self.setPopupMode(QtWidgets.QToolButton.ToolButtonPopupMode.InstantPopup)
         self.refresh()
 
     @property

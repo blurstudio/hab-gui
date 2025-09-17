@@ -24,20 +24,20 @@ class ErrorMessageBox(QtWidgets.QMessageBox):
         self.stack_limit = -5
 
         self.setWindowTitle("Exception")
-        self.setTextFormat(QtCore.Qt.RichText)
-        self.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        self.setTextFormat(QtCore.Qt.TextFormat.RichText)
+        self.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
         # Using detailedText seems to disable the close button, enable it
-        self.setEscapeButton(QtWidgets.QMessageBox.Ok)
+        self.setEscapeButton(QtWidgets.QMessageBox.StandardButton.Ok)
 
         # Create a button allowing the user to copy the non-highlighted text
-        copy_btn = self.addButton("Copy", QtWidgets.QMessageBox.ActionRole)
+        copy_btn = self.addButton("Copy", QtWidgets.QMessageBox.ButtonRole.ActionRole)
         copy_btn.setToolTip("Copy the full traceback for error reporting.")
         # Disconnect the QMessageBox signals that would cause the box to close
         # when this button is pressed and add our own signal connection
         copy_btn.disconnect()
         copy_btn.released.connect(self.copy_traceback)
 
-        self.setDefaultButton(QtWidgets.QMessageBox.Ok)
+        self.setDefaultButton(QtWidgets.QMessageBox.StandardButton.Ok)
         self.refresh()
 
     @QtCore.Slot()

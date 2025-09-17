@@ -68,9 +68,11 @@ class UriPickerDialog(QtWidgets.QDialog):
         )
 
         self.uiButtonsBOX = QtWidgets.QDialogButtonBox(
-            QtWidgets.QDialogButtonBox.Cancel, self
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel, self
         )
-        self.uiButtonsBOX.addButton("Launch", QtWidgets.QDialogButtonBox.AcceptRole)
+        self.uiButtonsBOX.addButton(
+            "Launch", QtWidgets.QDialogButtonBox.ButtonRole.AcceptRole
+        )
         self.uiButtonsBOX.accepted.connect(self.accept)
         self.uiButtonsBOX.rejected.connect(self.reject)
 
@@ -151,7 +153,7 @@ class UriPickerDialog(QtWidgets.QDialog):
         # Note: Not using `keyboardModifiers` because it is not updated when
         # calling this from the cli module.
         modifiers = QtWidgets.QApplication.queryKeyboardModifiers()
-        if modifiers == QtCore.Qt.ShiftModifier:
+        if modifiers == QtCore.Qt.KeyboardModifier.ShiftModifier:
             return True
 
         # always_ask is checked for this alias

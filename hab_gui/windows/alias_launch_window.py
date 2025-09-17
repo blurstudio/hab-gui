@@ -1,4 +1,5 @@
 import logging
+import math
 from functools import partial
 
 import hab
@@ -62,7 +63,7 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         refresh_time = refresh_time[0]
         if refresh_time:
             self.refresh_timer.timeout.connect(partial(self.refresh_cache, False))
-            refresh_time = utils.interval(refresh_time)
+            refresh_time = math.ceil(utils.interval(refresh_time))
             logger.debug(f"Setting auto-refresh interval to {refresh_time} seconds")
             self.refresh_timer.start(refresh_time * 1000)
 
@@ -86,7 +87,10 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
             self.layout.addWidget(self.footer_widget, 2, 0, 1, -1)
         else:
             self.spacer_item = QtWidgets.QSpacerItem(
-                0, 0, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+                0,
+                0,
+                QtWidgets.QSizePolicy.Policy.Minimum,
+                QtWidgets.QSizePolicy.Policy.Expanding,
             )
             self.layout.addItem(self.spacer_item, self.layout.rowCount(), 0, 1, -1)
 
@@ -227,4 +231,4 @@ def main():
     app = QtWidgets.QApplication([])
     window = AliasLaunchWindow(hab.Resolver(target="hab-gui"), verbosity=1)
     window.show()
-    app.exec_()
+    utils.exec_obj(app)

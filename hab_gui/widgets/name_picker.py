@@ -46,7 +46,7 @@ class NamePicker(QtWidgets.QGroupBox):
         ret = {}
         for index in range(self.name_tree.topLevelItemCount()):
             item = self.name_tree.topLevelItem(index)
-            checked = item.checkState(0) == QtCore.Qt.Checked
+            checked = item.checkState(0) == QtCore.Qt.CheckState.Checked
             ret[item.text(0)] = [item.text(1), checked]
         return ret
 
@@ -61,7 +61,7 @@ class NamePicker(QtWidgets.QGroupBox):
                 # Build the `default_selection` set for the current URI
                 if len(settings) > 1 and settings[1]:
                     self.default_selection.add(name)
-                item.setCheckState(0, QtCore.Qt.Unchecked)
+                item.setCheckState(0, QtCore.Qt.CheckState.Unchecked)
 
         self.name_tree.resizeColumnToContents(0)
         user_selection = self.user_selection(uri)
@@ -84,7 +84,7 @@ class NamePicker(QtWidgets.QGroupBox):
         ret = set()
         for index in range(self.name_tree.topLevelItemCount()):
             item = self.name_tree.topLevelItem(index)
-            if item.checkState(0) == QtCore.Qt.Checked:
+            if item.checkState(0) == QtCore.Qt.CheckState.Checked:
                 ret.add(item.text(0))
         return ret
 
@@ -95,7 +95,10 @@ class NamePicker(QtWidgets.QGroupBox):
                 item = self.name_tree.topLevelItem(index)
                 name = item.text(0)
                 item.setCheckState(
-                    0, QtCore.Qt.Checked if name in selected else QtCore.Qt.Unchecked
+                    0,
+                    QtCore.Qt.CheckState.Checked
+                    if name in selected
+                    else QtCore.Qt.CheckState.Unchecked,
                 )
 
     def sizeHint(self):  # noqa: N802

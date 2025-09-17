@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 @contextmanager
-def cursor_override(cursor=QtCore.Qt.BusyCursor):
+def cursor_override(cursor=QtCore.Qt.CursorShape.BusyCursor):
     """Change the application cursor to wait while running the context/decorator.
     Ensures that the cursor is restored even if an exception is raised.
     """
@@ -220,3 +220,14 @@ def block_signals(objs):
     finally:
         for o, b in blocked:
             o.blockSignals(b)
+
+
+def exec_obj(obj, *args, **kwargs):
+    """Work around the removal of `exec_` from Qt6(especially PyQt6).
+
+    This calls the `obj.exec` method if it exists, and falls back to `obj.exec_`
+    otherwise.
+    """
+    if hasattr(obj, "exec"):
+        return obj.exec(*args, **kwargs)
+    return obj.exec_(*args, **kwargs)

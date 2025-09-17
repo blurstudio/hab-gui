@@ -170,7 +170,7 @@ def launch(settings, verbosity, uri, alias, args):
     if splash:
         splash.finish(window)
 
-    app.exec_()
+    utils.exec_obj(app)
 
 
 @gui.command()

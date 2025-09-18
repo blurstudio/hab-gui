@@ -24,13 +24,7 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 requires-python = ">=3.7"
-dependencies = [
-    "click>=7.1.2",
-    "hab>=0.41.0",
-    "Pygments",
-    "Qt.py",
-    ]
-dynamic = ["version"]
+dynamic = ["dependencies", "optional-dependencies", "version"]
 
 [project.readme]
 file = "README.md"
@@ -41,26 +35,6 @@ Homepage = "https://github.com/blurstudio/hab-gui"
 Source = "https://github.com/blurstudio/hab-gui"
 Tracker = "https://github.com/blurstudio/hab-gui/issues"
 
-[project.optional-dependencies]
-dev = [
-    "black==22.12.0",
-    "build",
-    "covdefaults",
-    "coverage",
-    "flake8==5.0.4",
-    "flake8-bugbear==22.12.6",
-    "Flake8-pyproject",
-    "isort",
-    "json5",
-    "pep8-naming==0.13.3",
-    "pytest",
-    "tox",
-    "build",
-]
-json5 = [
-    "pyjson5"
-]
-
 [project.gui-scripts]
 habw = "hab.cli:cli"
 
@@ -68,6 +42,13 @@ habw = "hab.cli:cli"
 include-package-data = true
 platforms = ["any"]
 license-files = ["LICENSE"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = {file = ["requirements-dev.txt"]}
+json5 = {file = ["requirements-json5.txt"]}
 
 [tool.setuptools.packages.find]
 exclude = ["tests"]

@@ -49,13 +49,18 @@ jobs:
 
     strategy:
       matrix:
-        os: ['ubuntu-latest', 'windows-latest']
-        python: ['3.8', '3.9', '3.10', '3.11']
-        # Works around the depreciation of python 3.7 for ubuntu
-        # https://github.com/actions/setup-python/issues/544
-        include:
-          - os: 'ubuntu-22.04'
-            python: '3.7'
+        os: ['ubuntu-22.04', 'windows-latest']
+        test_env: [
+          'py39-PyQt5',
+          'py39-PySide5',
+          'py310-PyQt5',
+          'py310-PySide5',
+          'py311-PyQt5',
+          'py311-PyQt6.7',
+          'py311-PyQt6.9',
+          'py311-PySide6.7',
+          'py311-PySide6.9',
+        ]
 
     runs-on: ${{ matrix.os }}
 
@@ -63,24 +68,55 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      # Pulled from https://github.com/mottosso/Qt.py/blob/master/.github/actions/setup-tox/action.yml
+      - name: Install EGL mesa
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update -y -qq
+          sudo apt-get install -y -qq libegl1-mesa libegl1-mesa-dev libgl1-mesa-glx libgl1-mesa-dev
+
+      - name: Install GUI libs
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get install -y -qq libxcb-xinerama0
+          sudo apt-get install -y -qq libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xfixes0 libxcb-cursor0
+
+      # Note: The last python to get setup becomes the default for future python calls
+      - name: Setup Python 3.9
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python }}
+          python-version: '3.9'
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
       - name: Install dependencies
+        shell: bash
         run: |
+          python --version
           python -m pip install --upgrade pip
           python -m pip install tox
 
       - name: Run Tox
+        # Note: `--skip-missing-interpreters` prevents false success if python
+        # version is not installed when testing.
         run: |
-          tox -e begin,py
+          which tox
+          tox --skip-missing-interpreters false -e begin,${{ matrix.test_env }}
 
       - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-${{ matrix.os }}-${{ matrix.python }}
+          name: coverage-${{ matrix.os }}-${{ matrix.test_env }}
           path: .coverage/*
           include-hidden-files: true
           retention-days: 1

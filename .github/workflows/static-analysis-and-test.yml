@@ -22,7 +22,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
@@ -34,6 +34,9 @@ jobs:
 
       - name: Format with black
         run: tox -e black
+
+      - name: Check Qt Enums
+        run: tox -e qt-enum
 
 
   test:

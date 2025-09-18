@@ -1,10 +1,12 @@
-black
+black==22.12.0
 build
 covdefaults
 coverage
-flake8
-flake8-bugbear
+flake8==5.0.4
+flake8-bugbear==22.12.6
 Flake8-pyproject
-pep8-naming
+isort
+json5
+pep8-naming==0.13.3
 pytest
 tox

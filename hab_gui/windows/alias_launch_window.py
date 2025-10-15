@@ -51,7 +51,7 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         self.init_gui(uri)
 
         # Window properties
-        self.setFixedWidth(400)
+        self.setMinimumWidth(400)
         self.center_window_position()
 
         # Create a auto-refresh timer by default that forces a refresh of hab.

@@ -18,7 +18,7 @@ class FileTreeWidgetItem(QtWidgets.QTreeWidgetItem):
 
         # Add a child item that shows the filename. It should not be editable.
         self.filename_item = QtWidgets.QTreeWidgetItem(self)
-        self.filename_item.setFlags(QtCore.Qt.NoItemFlags)
+        self.filename_item.setFlags(QtCore.Qt.ItemFlag.NoItemFlags)
 
         self.refresh()
 

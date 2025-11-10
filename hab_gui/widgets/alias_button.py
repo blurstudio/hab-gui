@@ -23,8 +23,9 @@ class AliasButton(QtWidgets.QToolButton):
         self.alias_name = alias_name
 
         self.alias_dict = self.cfg.aliases
-        qsize_policy = QtWidgets.QSizePolicy
-        size_policy = qsize_policy(qsize_policy.Minimum, qsize_policy.Preferred)
+        size_policy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred
+        )
         self.setSizePolicy(size_policy)
         self.clicked.connect(self._button_action)
         self.refresh()

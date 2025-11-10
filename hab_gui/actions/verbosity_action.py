@@ -1,4 +1,4 @@
-from Qt import QtCore, QtWidgets
+from Qt import QtWidgets
 
 
 class VerbosityAction(QtWidgets.QAction):
@@ -48,10 +48,7 @@ class VerbosityAction(QtWidgets.QAction):
             action = menu.addAction(key)
             action.setData(value)
             action.setCheckable(True)
-            if verbosity == value:
-                action.setChecked(QtCore.Qt.Checked)
-            else:
-                action.setChecked(QtCore.Qt.Unchecked)
+            action.setChecked(verbosity == value)
         self.setMenu(menu)
 
     def load_config(self):
@@ -71,7 +68,4 @@ class VerbosityAction(QtWidgets.QAction):
         verbosity = self.settings.verbosity
         for action in self.menu().actions():
             value = action.data()
-            if verbosity == value:
-                action.setChecked(QtCore.Qt.Checked)
-            else:
-                action.setChecked(QtCore.Qt.Unchecked)
+            action.setChecked(verbosity == value)

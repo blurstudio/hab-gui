@@ -70,7 +70,7 @@ class CustomVariableEditor(QtWidgets.QWidget):
         if self._is_refreshing:
             return
 
-        if QtCore.Qt.EditRole in roles:
+        if QtCore.Qt.ItemDataRole.EditRole in roles:
             item = self.uiVariableTREE.itemFromIndex(top_left)
             column = top_left.column()
             if column == 0:

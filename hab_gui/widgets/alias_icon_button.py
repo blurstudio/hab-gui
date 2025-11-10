@@ -22,7 +22,7 @@ class AliasIconButton(AliasButton):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        self.setToolButtonStyle(QtCore.Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
 
     def refresh(self):
         alias = self.alias_dict[self.alias_name]

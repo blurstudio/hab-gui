@@ -29,7 +29,7 @@ class EditCustomVariablesAction(QtWidgets.QAction):
 
     def edit_custom_variables(self):
         dlg = CustomVariableEditor.create_dialog(self.settings, parent=self.parent())
-        dlg.exec_()
+        utils.exec_obj(dlg)
 
         # Ensure the hab_gui respects any changes the user may have made
         self.settings.root_widget.refresh_cache()

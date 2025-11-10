@@ -31,7 +31,7 @@ class PinnedUriButton(QtWidgets.QToolButton):
         self.setToolTip("Select and manage quick access to commonly used URI's.")
         self.setText(self._text_main)
         self.setIcon(utils.Paths.icon("pin-outline.svg"))
-        self.setPopupMode(self.InstantPopup)
+        self.setPopupMode(QtWidgets.QToolButton.ToolButtonPopupMode.InstantPopup)
         self.refresh()
 
     def add_uri(self, uri):

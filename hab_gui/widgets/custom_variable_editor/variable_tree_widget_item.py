@@ -8,7 +8,7 @@ class VariableTreeWidgetItem(QtWidgets.QTreeWidgetItem):
         super().__init__(parent)
         self.parser = parent.parser
         self._variable_name = variable_name
-        self.setFlags(self.flags() | QtCore.Qt.ItemIsEditable)
+        self.setFlags(self.flags() | QtCore.Qt.ItemFlag.ItemIsEditable)
         self.refresh()
 
     def remove_variable(self):

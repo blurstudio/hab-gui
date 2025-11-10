@@ -1,5 +1,6 @@
 import logging
 
+from .. import utils
 from .logging_exception import LoggingExceptionInit
 
 logger = logging.getLogger(__name__)
@@ -17,4 +18,4 @@ class MessageBoxInit(LoggingExceptionInit):
         from ..dialogs.error_message_box import ErrorMessageBox
 
         box = ErrorMessageBox(cls, exception, tb, parent=None)
-        box.exec_()
+        utils.exec_obj(box)

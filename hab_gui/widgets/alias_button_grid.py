@@ -6,6 +6,7 @@ from Qt import QtWidgets
 
 from .. import utils
 from .alias_icon_button import AliasIconButton
+from .flow_layout import FlowLayout
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +39,7 @@ class AliasButtonGrid(QtWidgets.QWidget):
         self.button_layout = button_layout
         self.button_cls = button_cls
 
-        self.grid_layout = QtWidgets.QGridLayout(self)
+        self.grid_layout = FlowLayout(self)
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.grid_layout)
 

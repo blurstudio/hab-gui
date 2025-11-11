@@ -83,6 +83,18 @@ class FlowLayout(QLayout):
     def addItem(self, item):  # noqa: N802
         self.itemList.append(item)
 
+    def addWidget(  # noqa: N802
+        self,
+        widget,
+        row=None,
+        column=None,
+        rowSpan=None,  # noqa: N803
+        columnSpan=None,
+        alignment=None,
+    ):
+        # Hack to make this support a grid style layout
+        super().addWidget(widget)
+
     def count(self):
         return len(self.itemList)
 

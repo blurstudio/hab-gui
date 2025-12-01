@@ -52,7 +52,6 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
 
         # Window properties
         self.setMinimumWidth(400)
-        self.center_window_position()
 
         # Create a auto-refresh timer by default that forces a refresh of hab.
         # This can be disabled by setting the site config setting to an empty string.
@@ -107,6 +106,11 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
                 self.setTabOrder(self.alias_buttons, self.pinned_uris)
             else:
                 self.setTabOrder(self.uri_widget, self.pinned_uris)
+
+    def closeEvent(self, event):  # noqa: N802
+        """Saves the prefs on close if prefs are enabled."""
+        self.record_prefs()
+        super().closeEvent(event)
 
     def process_entry_points(self):
         """Loads the classes defined by the site entry_point system.
@@ -196,6 +200,12 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         # Ensure the window title always shows the currently selected URI
         self.settings.uri_changed.connect(self._update_window_title)
 
+        # Window properties
+        self.center_window_position()
+
+        # Restore prefs
+        self.restore_prefs()
+
     @utils.cursor_override()
     def refresh_cache(self, reset_timer=True):
         """Refresh the resolved hab and re-display.
@@ -225,6 +235,30 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         center_point = primary.availableGeometry().center()
         qt_rectangle.moveCenter(center_point)
         self.move(qt_rectangle.topLeft())
+
+    def restore_prefs(self):
+        """Restore various saved prefs. It will only do that if prefs are
+        enabled. This will call load to ensure the preference file has been
+        loaded.
+        """
+        prefs = self.settings.user_pref("alias_launcher", {})
+
+        # Restore previous geometry
+        geom = prefs.get("geometry", None)
+        if geom:
+            self.setGeometry(*geom)
+
+    def record_prefs(self):
+        """Save various prefs. It will only do that if prefs are enabled. This
+        will call load to ensure the preference file has been loaded.
+        """
+        # Use the namespace alias_launcher to store this and any future UI prefs.
+        prefs = self.settings.user_pref("alias_launcher", {})
+
+        # Save window geometry
+        prefs["geometry"] = self.geometry().getRect()
+
+        self.settings.set_user_pref("alias_launcher", prefs)
 
 
 def main():

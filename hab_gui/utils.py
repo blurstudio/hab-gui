@@ -6,6 +6,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from Qt import QtCompat, QtCore, QtGui, QtWidgets
+from Qt.QtWidgets import QApplication
 
 logger = logging.getLogger(__name__)
 
@@ -231,3 +232,30 @@ def exec_obj(obj, *args, **kwargs):
     if hasattr(obj, "exec"):
         return obj.exec(*args, **kwargs)
     return obj.exec_(*args, **kwargs)
+
+
+def ensure_window_is_visible(widget):
+    """
+    Checks the widget's geometry against all of the system's screens. If it does
+    not intersect, it will reposition it to the top left corner of the highest
+    numbered screen. Returns a boolean indicating if it had to move the widget.
+    """
+    screens = QApplication.screens()
+    geo = widget.geometry()
+
+    for screen in screens:
+        if screen.geometry().intersects(geo):
+            break
+    else:
+        mon_geo = screens[-1].geometry()  # Use the last screen available
+        geo.moveTo(mon_geo.x() + 50, mon_geo.y() + 100)
+
+        # Setting the geometry may trigger a second check if setGeometry is overridden
+        disable = hasattr(widget, "checkScreenGeo") and widget.checkScreenGeo
+        if disable:
+            widget.checkScreenGeo = False
+        widget.setGeometry(geo)
+        if disable:
+            widget.checkScreenGeo = True
+        return True
+    return False

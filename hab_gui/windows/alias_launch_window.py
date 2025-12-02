@@ -47,6 +47,8 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         self.button_wrap_length = button_wrap_length
         self.button_layout = button_layout
 
+        self.checkScreenGeo = True
+
         self.process_entry_points()
         self.init_gui(uri)
 
@@ -259,6 +261,16 @@ class AliasLaunchWindow(QtWidgets.QMainWindow):
         prefs["geometry"] = self.geometry().getRect()
 
         self.settings.set_user_pref("alias_launcher", prefs)
+
+    def setGeometry(self, *args):  # noqa: N802
+        """
+        Sets the window's geometry, It will also check if the geometry is visible on any
+        monitors. If it is not it will move the window so it is visible. This can be
+        disabled by setting self.checkScreenGeo to False
+        """
+        super().setGeometry(*args)
+        if self.checkScreenGeo:
+            utils.ensure_window_is_visible(self)
 
 
 def main():
